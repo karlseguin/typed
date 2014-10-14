@@ -10,6 +10,9 @@ This library hopes to make that slightly less painful.
 
     go get github.com/karlseguin/typed
 
+## Note
+
+While the library could be used with any `map[string]interface{}`, it *is* tailored to be used with `encoding/json`. Specifically, it won't ever try to convert data, except for integers (which `encoding/json` treats as floats).
 
 ## Usage:
 
