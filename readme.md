@@ -15,14 +15,16 @@ This library hopes to make that slightly less painful.
 
 A typed wrapper around a `map[string]interface{}` can be created in one of three ways:
 
-    // directly from a map[string]interace{}
-    typed := typed.New(a_map)
+```go
+// directly from a map[string]interace{}
+typed := typed.New(a_map)
 
-    // from a json []byte
-    typed, err := typed.Json(data)
+// from a json []byte
+typed, err := typed.Json(data)
 
-    // from a file containing JSON
-    typed, err := typed.JsonFile(path)
+// from a file containing JSON
+typed, err := typed.JsonFile(path)
+```
 
 Once we have a typed wrapper, we can use various functions to navigate the structure:
 
@@ -59,47 +61,48 @@ We can extract key value pairs:
 
 ## Example
 
-    package main
+```go
+package main
 
-    import (
-      "fmt"
-      "typed"
-    )
+import (
+  "fmt"
+  "typed"
+)
 
-    func main() {
-      json := `
-    {
-      "log": true,
-      "name": "leto",
-      "percentiles": [75, 85, 95],
-      "server": {
-        "port": 9001,
-        "host": "localhost"
-      },
-      "cache": {
-        "users": {"ttl": 5}
-      },
-      "blocked": {
-        "10.10.1.1": true
-      }
-    }`
-      typed, err := typed.Json([]byte(json))
-      if err != nil {
-        fmt.Println(err)
-      }
+func main() {
+  json := `
+{
+  "log": true,
+  "name": "leto",
+  "percentiles": [75, 85, 95],
+  "server": {
+    "port": 9001,
+    "host": "localhost"
+  },
+  "cache": {
+    "users": {"ttl": 5}
+  },
+  "blocked": {
+    "10.10.1.1": true
+  }
+}`
+  typed, err := typed.Json([]byte(json))
+  if err != nil {
+    fmt.Println(err)
+  }
 
-      fmt.Println(typed.Bool("log"))
-      fmt.Println(typed.String("name"))
-      fmt.Println(typed.Ints("percentiles"))
-      fmt.Println(typed.FloatOr("load", 0.5))
+  fmt.Println(typed.Bool("log"))
+  fmt.Println(typed.String("name"))
+  fmt.Println(typed.Ints("percentiles"))
+  fmt.Println(typed.FloatOr("load", 0.5))
 
-      server := typed.Object("server")
-      fmt.Println(server.Int("port"))
-      fmt.Println(server.String("host"))
+  server := typed.Object("server")
+  fmt.Println(server.Int("port"))
+  fmt.Println(server.String("host"))
 
-      fmt.Println(typed.Map("server"))
+  fmt.Println(typed.Map("server"))
 
-      fmt.Println(typed.StringObject("cache")["users"].Int("ttl"))
-      fmt.Println(typed.StringBool("blocked")["10.10.1.1"])
-    }
-
+  fmt.Println(typed.StringObject("cache")["users"].Int("ttl"))
+  fmt.Println(typed.StringBool("blocked")["10.10.1.1"])
+}
+```
