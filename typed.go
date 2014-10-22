@@ -3,7 +3,6 @@ package typed
 import (
 	"encoding/json"
 	"io/ioutil"
-	//"fmt"
 )
 
 type Typed map[string]interface{}
