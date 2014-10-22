@@ -53,6 +53,7 @@ func Test_String(t *testing.T) {
 	spec.Expect(typed.StringOr("host", "openmymind.net")).ToEqual("localhost")
 	spec.Expect(typed.String("other")).ToEqual("")
 	spec.Expect(typed.StringOr("other", "openmymind.net")).ToEqual("openmymind.net")
+
 }
 
 func Test_Object(t *testing.T) {
@@ -97,6 +98,8 @@ func Test_Strings(t *testing.T) {
 	typed := New(build("names", []interface{}{"a", "b"}))
 	spec.Expect(typed.Strings("names")).ToEqual([]string{"a", "b"})
 	spec.Expect(typed.Strings("other")).ToEqual([]string{})
+	spec.Expect(typed.StringsOr("names", []string{"c", "d"})).ToEqual([]string{"a", "b"})
+	spec.Expect(typed.StringsOr("other", []string{"c", "d"})).ToEqual([]string{"c", "d"})
 }
 
 func Test_Objects(t *testing.T) {
