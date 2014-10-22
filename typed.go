@@ -3,6 +3,7 @@ package typed
 import (
 	"encoding/json"
 	"io/ioutil"
+	//"fmt"
 )
 
 type Typed map[string]interface{}
@@ -199,9 +200,13 @@ func (t Typed) Floats(key string) []float64 {
 }
 
 func (t Typed) Strings(key string) []string {
+	return t.StringsOr(key, nil)
+}
+
+func (t Typed) StringsOr(key string, d []string) []string {
 	value, exists := t[key]
 	if exists == false {
-		return nil
+		return d
 	}
 	if n, ok := value.([]string); ok {
 		return n
@@ -214,7 +219,7 @@ func (t Typed) Strings(key string) []string {
 		}
 		return n
 	}
-	return nil
+	return d
 }
 
 func (t Typed) Objects(key string) []Typed {
