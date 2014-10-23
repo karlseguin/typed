@@ -184,9 +184,13 @@ func (t Typed) IntsOr(key string, d []int) []int {
 }
 
 func (t Typed) Floats(key string) []float64 {
+	return t.FloatsOr(key, nil)
+}
+
+func (t Typed) FloatsOr(key string, d []float64) []float64 {
 	value, exists := t[key]
 	if exists == false {
-		return nil
+		return d
 	}
 	if n, ok := value.([]float64); ok {
 		return n
