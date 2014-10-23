@@ -53,7 +53,6 @@ func Test_String(t *testing.T) {
 	spec.Expect(typed.StringOr("host", "openmymind.net")).ToEqual("localhost")
 	spec.Expect(typed.String("other")).ToEqual("")
 	spec.Expect(typed.StringOr("other", "openmymind.net")).ToEqual("openmymind.net")
-
 }
 
 func Test_Object(t *testing.T) {
@@ -71,6 +70,8 @@ func Test_Bools(t *testing.T) {
 	typed := New(build("boring", []interface{}{true, false}))
 	spec.Expect(typed.Bools("boring")).ToEqual([]bool{true, false})
 	spec.Expect(typed.Bools("other")).ToEqual([]bool{})
+	spec.Expect(typed.BoolsOr("boring", []bool{false, true})).ToEqual([]bool{true, false})
+	spec.Expect(typed.BoolsOr("other", []bool{false, true})).ToEqual([]bool{false, true})
 }
 
 func Test_Ints(t *testing.T) {
@@ -78,6 +79,8 @@ func Test_Ints(t *testing.T) {
 	typed := New(build("scores", []interface{}{2, 1}))
 	spec.Expect(typed.Ints("scores")).ToEqual([]int{2, 1})
 	spec.Expect(typed.Ints("other")).ToEqual([]int{})
+	spec.Expect(typed.IntsOr("scores", []int{3, 4})).ToEqual([]int{2, 1})
+	spec.Expect(typed.IntsOr("other", []int{3, 4})).ToEqual([]int{3, 4})
 }
 
 func Test_Ints_WithFloats(t *testing.T) {
@@ -91,6 +94,8 @@ func Test_Floats(t *testing.T) {
 	typed := New(build("ranks", []interface{}{2.1, 1.2}))
 	spec.Expect(typed.Floats("ranks")).ToEqual([]float64{2.1, 1.2})
 	spec.Expect(typed.Floats("other")).ToEqual([]float64{})
+	spec.Expect(typed.FloatsOr("ranks", []float64{3.1, 4.2})).ToEqual([]float64{2.1, 1.2})
+	spec.Expect(typed.FloatsOr("other", []float64{3.1, 4.2})).ToEqual([]float64{3.1, 4.2})
 }
 
 func Test_Strings(t *testing.T) {
