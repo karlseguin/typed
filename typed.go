@@ -150,9 +150,13 @@ func (t Typed) BoolsOr(key string, d []bool) []bool {
 }
 
 func (t Typed) Ints(key string) []int {
+	return t.IntsOr(key, nil)
+}
+
+func (t Typed) IntsOr(key string, d []int) []int {
 	value, exists := t[key]
 	if exists == false {
-		return nil
+		return d
 	}
 	if n, ok := value.([]int); ok {
 		return n
@@ -160,7 +164,7 @@ func (t Typed) Ints(key string) []int {
 	if a, ok := value.([]interface{}); ok {
 		l := len(a)
 		if l == 0 {
-			return nil
+			return d
 		}
 
 		n := make([]int, l)
@@ -176,7 +180,7 @@ func (t Typed) Ints(key string) []int {
 		}
 		return n
 	}
-	return nil
+	return d
 }
 
 func (t Typed) Floats(key string) []float64 {
