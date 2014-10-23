@@ -53,7 +53,6 @@ func Test_String(t *testing.T) {
 	spec.Expect(typed.StringOr("host", "openmymind.net")).ToEqual("localhost")
 	spec.Expect(typed.String("other")).ToEqual("")
 	spec.Expect(typed.StringOr("other", "openmymind.net")).ToEqual("openmymind.net")
-
 }
 
 func Test_Object(t *testing.T) {
