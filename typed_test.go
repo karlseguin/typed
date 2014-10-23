@@ -80,6 +80,8 @@ func Test_Ints(t *testing.T) {
 	typed := New(build("scores", []interface{}{2, 1}))
 	spec.Expect(typed.Ints("scores")).ToEqual([]int{2, 1})
 	spec.Expect(typed.Ints("other")).ToEqual([]int{})
+	spec.Expect(typed.IntsOr("scores", []int{3, 4})).ToEqual([]int{2, 1})
+	spec.Expect(typed.IntsOr("other", []int{3, 4})).ToEqual([]int{3, 4})
 }
 
 func Test_Ints_WithFloats(t *testing.T) {
