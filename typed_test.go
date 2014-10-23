@@ -71,6 +71,8 @@ func Test_Bools(t *testing.T) {
 	typed := New(build("boring", []interface{}{true, false}))
 	spec.Expect(typed.Bools("boring")).ToEqual([]bool{true, false})
 	spec.Expect(typed.Bools("other")).ToEqual([]bool{})
+	spec.Expect(typed.BoolsOr("boring", []bool{false, true})).ToEqual([]bool{true, false})
+	spec.Expect(typed.BoolsOr("other", []bool{false, true})).ToEqual([]bool{false, true})
 }
 
 func Test_Ints(t *testing.T) {
