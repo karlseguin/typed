@@ -95,6 +95,8 @@ func Test_Floats(t *testing.T) {
 	typed := New(build("ranks", []interface{}{2.1, 1.2}))
 	spec.Expect(typed.Floats("ranks")).ToEqual([]float64{2.1, 1.2})
 	spec.Expect(typed.Floats("other")).ToEqual([]float64{})
+	spec.Expect(typed.FloatsOr("ranks", []float64{3.1, 4.2})).ToEqual([]float64{2.1, 1.2})
+	spec.Expect(typed.FloatsOr("other", []float64{3.1, 4.2})).ToEqual([]float64{3.1, 4.2})
 }
 
 func Test_Strings(t *testing.T) {
