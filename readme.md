@@ -48,6 +48,7 @@ We can also extract arrays via:
 - Strings(key string) []string
 - StringsOr(key string, defaultValue []string) []string
 - BoolsOr(key string, defaultValue []bool) []bool
+- IntsOr(key string, defaultValue []int) []int
 
 We can extract nested objects, other as another typed wrapper, or as a raw `map[string]interface{}`:
 
