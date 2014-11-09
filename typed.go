@@ -186,6 +186,10 @@ func (t Typed) Ints(key string) []int {
 	return t.IntsOr(key, nil)
 }
 
+// Returns an slice of ints, or the specified slice
+// if the key doesn't exist or isn't a valid []int.
+// Some work is done to handle the fact that JSON ints
+// are represented as floats.
 func (t Typed) IntsOr(key string, d []int) []int {
 	value, exists := t[key]
 	if exists == false {
@@ -221,6 +225,8 @@ func (t Typed) Floats(key string) []float64 {
 	return t.FloatsOr(key, nil)
 }
 
+// Returns an slice of floats, or the specified slice
+// if the key doesn't exist or isn't a valid []float64
 func (t Typed) FloatsOr(key string, d []float64) []float64 {
 	value, exists := t[key]
 	if exists == false {
@@ -245,6 +251,8 @@ func (t Typed) Strings(key string) []string {
 	return t.StringsOr(key, nil)
 }
 
+// Returns an slice of strings, or the specified slice
+// if the key doesn't exist or isn't a valid []string
 func (t Typed) StringsOr(key string, d []string) []string {
 	value, exists := t[key]
 	if exists == false {
