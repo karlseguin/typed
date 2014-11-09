@@ -5,22 +5,27 @@ import (
 	"io/ioutil"
 )
 
+// A Typed type helper for accessing a map
 type Typed map[string]interface{}
 
+// Wrap the map into a Typed
 func New(m map[string]interface{}) Typed {
 	return Typed(m)
 }
 
+// Create a Typed helper from the given JSON bytes
 func Json(data []byte) (Typed, error) {
 	var m map[string]interface{}
 	err := json.Unmarshal(data, &m)
 	return Typed(m), err
 }
 
+// Create a Typed helper from the given JSON string
 func JsonString(data string) (Typed, error) {
 	return Json([]byte(data))
 }
 
+// Create a Typed helper from the JSON within a file
 func JsonFile(path string) (Typed, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -29,10 +34,14 @@ func JsonFile(path string) (Typed, error) {
 	return Json(data)
 }
 
+// Returns a boolean at the key, or false if it
+// doesn't exist, or if it isn't a bool
 func (t Typed) Bool(key string) bool {
 	return t.BoolOr(key, false)
 }
 
+// Returns a boolean at the key, or the specified
+// value if it doesn't exist or isn't a bool
 func (t Typed) BoolOr(key string, d bool) bool {
 	value, exists := t[key]
 	if exists == false {
@@ -48,6 +57,8 @@ func (t Typed) Int(key string) int {
 	return t.IntOr(key, 0)
 }
 
+// Returns a int at the key, or the specified
+// value if it doesn't exist or isn't a int
 func (t Typed) IntOr(key string, d int) int {
 	value, exists := t[key]
 	if exists == false {
@@ -66,6 +77,8 @@ func (t Typed) Float(key string) float64 {
 	return t.FloatOr(key, 0)
 }
 
+// Returns a float at the key, or the specified
+// value if it doesn't exist or isn't a float
 func (t Typed) FloatOr(key string, d float64) float64 {
 	value, exists := t[key]
 	if exists == false {
@@ -81,6 +94,8 @@ func (t Typed) String(key string) string {
 	return t.StringOr(key, "")
 }
 
+// Returns a string at the key, or the specified
+// value if it doesn't exist or isn't a strin
 func (t Typed) StringOr(key string, d string) string {
 	value, exists := t[key]
 	if exists == false {
@@ -92,6 +107,10 @@ func (t Typed) StringOr(key string, d string) string {
 	return d
 }
 
+// Returns a Typed helper at the key
+// If the key doesn't exist, a default Typed helper
+// is returned (which will return default values for
+// any subsequent sub queries)
 func (t Typed) Object(key string) Typed {
 	o := t.ObjectOr(key, nil)
 	if o == nil {
@@ -100,6 +119,9 @@ func (t Typed) Object(key string) Typed {
 	return o
 }
 
+// Returns a Typed helper at the key or the specified
+// default if the key doesn't exist or if the key isn't
+// a map[string]interface{}
 func (t Typed) ObjectOr(key string, d map[string]interface{}) Typed {
 	value, exists := t[key]
 	if exists == false {
@@ -111,10 +133,16 @@ func (t Typed) ObjectOr(key string, d map[string]interface{}) Typed {
 	return Typed(d)
 }
 
+// Returns a map[string]interface{} at the key
+// or a nil map if the key doesn't exist or if the key isn't
+// a map[string]interface
 func (t Typed) Map(key string) map[string]interface{} {
 	return t.MapOr(key, nil)
 }
 
+// Returns a map[string]interface{} at the key
+// or the specified default if the key doesn't exist
+// or if the key isn't a map[string]interface
 func (t Typed) MapOr(key string, d map[string]interface{}) map[string]interface{} {
 	value, exists := t[key]
 	if exists == false {
@@ -126,10 +154,12 @@ func (t Typed) MapOr(key string, d map[string]interface{}) map[string]interface{
 	return d
 }
 
+// Returns an slice of boolean, or an nil slice
 func (t Typed) Bools(key string) []bool {
 	return t.BoolsOr(key, nil)
 }
 
+// Returns an slice of boolean, or the specified slice
 func (t Typed) BoolsOr(key string, d []bool) []bool {
 	value, exists := t[key]
 	if exists == false {
@@ -149,6 +179,9 @@ func (t Typed) BoolsOr(key string, d []bool) []bool {
 	return d
 }
 
+// Returns an slice of ints, or the specified slice
+// Some work is done to handle the fact that JSON ints
+// are represented as floats.
 func (t Typed) Ints(key string) []int {
 	return t.IntsOr(key, nil)
 }
@@ -183,6 +216,7 @@ func (t Typed) IntsOr(key string, d []int) []int {
 	return d
 }
 
+// Returns an slice of floats, or a nil slice
 func (t Typed) Floats(key string) []float64 {
 	return t.FloatsOr(key, nil)
 }
@@ -206,6 +240,7 @@ func (t Typed) FloatsOr(key string, d []float64) []float64 {
 	return nil
 }
 
+// Returns an slice of strings, or a nil slice
 func (t Typed) Strings(key string) []string {
 	return t.StringsOr(key, nil)
 }
@@ -229,6 +264,7 @@ func (t Typed) StringsOr(key string, d []string) []string {
 	return d
 }
 
+// Returns an slice of Typed helpers, or a nil slice
 func (t Typed) Objects(key string) []Typed {
 	value, exists := t[key]
 	if exists == true {
@@ -244,6 +280,7 @@ func (t Typed) Objects(key string) []Typed {
 	return nil
 }
 
+// Returns an slice of map[string]interfaces, or a nil slice
 func (t Typed) Maps(key string) []map[string]interface{} {
 	value, exists := t[key]
 	if exists == true {
@@ -259,6 +296,7 @@ func (t Typed) Maps(key string) []map[string]interface{} {
 	return nil
 }
 
+// Returns an map[string]bool
 func (t Typed) StringBool(key string) map[string]bool {
 	raw, ok := t.getmap(key)
 	if ok == false {
@@ -271,6 +309,9 @@ func (t Typed) StringBool(key string) map[string]bool {
 	return m
 }
 
+// Returns an map[string]int
+// Some work is done to handle the fact that JSON ints
+// are represented as floats.
 func (t Typed) StringInt(key string) map[string]int {
 	raw, ok := t.getmap(key)
 	if ok == false {
@@ -288,6 +329,7 @@ func (t Typed) StringInt(key string) map[string]int {
 	return m
 }
 
+// Returns an map[string]float64
 func (t Typed) StringFloat(key string) map[string]float64 {
 	raw, ok := t.getmap(key)
 	if ok == false {
@@ -300,6 +342,7 @@ func (t Typed) StringFloat(key string) map[string]float64 {
 	return m
 }
 
+// Returns an map[string]string
 func (t Typed) StringString(key string) map[string]string {
 	raw, ok := t.getmap(key)
 	if ok == false {
@@ -312,6 +355,7 @@ func (t Typed) StringString(key string) map[string]string {
 	return m
 }
 
+// Returns an map[string]Typed
 func (t Typed) StringObject(key string) map[string]Typed {
 	raw, ok := t.getmap(key)
 	if ok == false {
