@@ -64,7 +64,6 @@ func Test_Object(t *testing.T) {
 	spec.Expect(typed.ObjectOr("other", build("x", "y")).String("x")).ToEqual("y")
 }
 
-
 func Test_Bools(t *testing.T) {
 	spec := gspec.New(t)
 	typed := New(build("boring", []interface{}{true, false}))
@@ -135,7 +134,6 @@ func Test_StringInt(t *testing.T) {
 	spec.Expect(m["b"]).ToEqual(43)
 	spec.Expect(m["xxz"]).ToEqual(0)
 }
-
 
 func Test_StringFloat(t *testing.T) {
 	spec := gspec.New(t)

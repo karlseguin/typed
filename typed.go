@@ -259,7 +259,6 @@ func (t Typed) Maps(key string) []map[string]interface{} {
 	return nil
 }
 
-
 func (t Typed) StringBool(key string) map[string]bool {
 	raw, ok := t.getmap(key)
 	if ok == false {
@@ -324,7 +323,6 @@ func (t Typed) StringObject(key string) map[string]Typed {
 	}
 	return m
 }
-
 
 func (t Typed) getmap(key string) (raw map[string]interface{}, exists bool) {
 	value, exists := t[key]
