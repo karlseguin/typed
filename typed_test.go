@@ -1,164 +1,151 @@
 package typed
 
 import (
-	"github.com/karlseguin/gspec"
+	. "github.com/karlseguin/expect"
 	"testing"
 )
 
-func Test_Json(t *testing.T) {
-	spec := gspec.New(t)
+type TypedTests struct{}
+
+func Test_Typed(t *testing.T) {
+	Expectify(new(TypedTests), t)
+}
+
+func (_ *TypedTests) Json() {
 	typed, err := Json([]byte(`{"power": 9002}`))
-	spec.Expect(typed.Int("power")).ToEqual(9002)
-	spec.Expect(err).ToBeNil()
+	Expect(typed.Int("power")).To.Equal(9002)
+	Expect(err).To.Equal(nil)
 }
 
-func Test_JsonFile(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) JsonFile() {
 	typed, err := JsonFile("test.json")
-	spec.Expect(typed.String("name")).ToEqual("leto")
-	spec.Expect(err).ToBeNil()
+	Expect(typed.String("name")).To.Equal("leto")
+	Expect(err).To.Equal(nil)
 }
 
-func Test_Bool(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Bool() {
 	typed := New(build("log", true))
-	spec.Expect(typed.Bool("log")).ToEqual(true)
-	spec.Expect(typed.BoolOr("log", false)).ToEqual(true)
-	spec.Expect(typed.Bool("other")).ToEqual(false)
-	spec.Expect(typed.BoolOr("other", true)).ToEqual(true)
+	Expect(typed.Bool("log")).To.Equal(true)
+	Expect(typed.BoolOr("log", false)).To.Equal(true)
+	Expect(typed.Bool("other")).To.Equal(false)
+	Expect(typed.BoolOr("other", true)).To.Equal(true)
 }
 
-func Test_Int(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Int() {
 	typed := New(build("port", 84))
-	spec.Expect(typed.Int("port")).ToEqual(84)
-	spec.Expect(typed.IntOr("port", 11)).ToEqual(84)
-	spec.Expect(typed.Int("other")).ToEqual(0)
-	spec.Expect(typed.IntOr("other", 33)).ToEqual(33)
+	Expect(typed.Int("port")).To.Equal(84)
+	Expect(typed.IntOr("port", 11)).To.Equal(84)
+	Expect(typed.Int("other")).To.Equal(0)
+	Expect(typed.IntOr("other", 33)).To.Equal(33)
 }
 
-func Test_Float(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Float() {
 	typed := New(build("pi", 3.14))
-	spec.Expect(typed.Float("pi")).ToEqual(3.14)
-	spec.Expect(typed.FloatOr("pi", 11.3)).ToEqual(3.14)
-	spec.Expect(typed.Float("other")).ToEqual(0.0)
-	spec.Expect(typed.FloatOr("other", 11.3)).ToEqual(11.3)
+	Expect(typed.Float("pi")).To.Equal(3.14)
+	Expect(typed.FloatOr("pi", 11.3)).To.Equal(3.14)
+	Expect(typed.Float("other")).To.Equal(0.0)
+	Expect(typed.FloatOr("other", 11.3)).To.Equal(11.3)
 }
 
-func Test_String(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) String() {
 	typed := New(build("host", "localhost"))
-	spec.Expect(typed.String("host")).ToEqual("localhost")
-	spec.Expect(typed.StringOr("host", "openmymind.net")).ToEqual("localhost")
-	spec.Expect(typed.String("other")).ToEqual("")
-	spec.Expect(typed.StringOr("other", "openmymind.net")).ToEqual("openmymind.net")
+	Expect(typed.String("host")).To.Equal("localhost")
+	Expect(typed.StringOr("host", "openmymind.net")).To.Equal("localhost")
+	Expect(typed.String("other")).To.Equal("")
+	Expect(typed.StringOr("other", "openmymind.net")).To.Equal("openmymind.net")
 }
 
-func Test_Object(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Object() {
 	typed := New(build("server", build("port", 32)))
-	spec.Expect(typed.Object("server").Int("port")).ToEqual(32)
-	spec.Expect(typed.ObjectOr("server", build("a", "b")).Int("port")).ToEqual(32)
-	spec.Expect(len(typed.Object("other"))).ToEqual(0)
-	spec.Expect(typed.ObjectOr("other", build("x", "y")).String("x")).ToEqual("y")
+	Expect(typed.Object("server").Int("port")).To.Equal(32)
+	Expect(typed.ObjectOr("server", build("a", "b")).Int("port")).To.Equal(32)
+	Expect(len(typed.Object("other"))).To.Equal(0)
+	Expect(typed.ObjectOr("other", build("x", "y")).String("x")).To.Equal("y")
 }
 
-func Test_Bools(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Bools() {
 	typed := New(build("boring", []interface{}{true, false}))
-	spec.Expect(typed.Bools("boring")).ToEqual([]bool{true, false})
-	spec.Expect(typed.Bools("other")).ToEqual([]bool{})
-	spec.Expect(typed.BoolsOr("boring", []bool{false, true})).ToEqual([]bool{true, false})
-	spec.Expect(typed.BoolsOr("other", []bool{false, true})).ToEqual([]bool{false, true})
+	Expect(typed.Bools("boring")).To.Equal([]bool{true, false})
+	Expect(len(typed.Bools("other"))).To.Equal(0)
+	Expect(typed.BoolsOr("boring", []bool{false, true})).To.Equal([]bool{true, false})
+	Expect(typed.BoolsOr("other", []bool{false, true})).To.Equal([]bool{false, true})
 }
 
-func Test_Ints(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Ints() {
 	typed := New(build("scores", []interface{}{2, 1}))
-	spec.Expect(typed.Ints("scores")).ToEqual([]int{2, 1})
-	spec.Expect(typed.Ints("other")).ToEqual([]int{})
-	spec.Expect(typed.IntsOr("scores", []int{3, 4})).ToEqual([]int{2, 1})
-	spec.Expect(typed.IntsOr("other", []int{3, 4})).ToEqual([]int{3, 4})
+	Expect(typed.Ints("scores")).To.Equal([]int{2, 1})
+	Expect(len(typed.Ints("other"))).To.Equal(0)
+	Expect(typed.IntsOr("scores", []int{3, 4})).To.Equal([]int{2, 1})
+	Expect(typed.IntsOr("other", []int{3, 4})).To.Equal([]int{3, 4})
 }
 
-func Test_Ints_WithFloats(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Ints_WithFloats() {
 	typed := New(build("scores", []interface{}{2.1, 7.39}))
-	spec.Expect(typed.Ints("scores")).ToEqual([]int{2, 7})
+	Expect(typed.Ints("scores")).To.Equal([]int{2, 7})
 }
 
-func Test_Floats(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Floats() {
 	typed := New(build("ranks", []interface{}{2.1, 1.2}))
-	spec.Expect(typed.Floats("ranks")).ToEqual([]float64{2.1, 1.2})
-	spec.Expect(typed.Floats("other")).ToEqual([]float64{})
-	spec.Expect(typed.FloatsOr("ranks", []float64{3.1, 4.2})).ToEqual([]float64{2.1, 1.2})
-	spec.Expect(typed.FloatsOr("other", []float64{3.1, 4.2})).ToEqual([]float64{3.1, 4.2})
+	Expect(typed.Floats("ranks")).To.Equal([]float64{2.1, 1.2})
+	Expect(len(typed.Floats("other"))).To.Equal(0)
+	Expect(typed.FloatsOr("ranks", []float64{3.1, 4.2})).To.Equal([]float64{2.1, 1.2})
+	Expect(typed.FloatsOr("other", []float64{3.1, 4.2})).To.Equal([]float64{3.1, 4.2})
 }
 
-func Test_Strings(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Strings() {
 	typed := New(build("names", []interface{}{"a", "b"}))
-	spec.Expect(typed.Strings("names")).ToEqual([]string{"a", "b"})
-	spec.Expect(typed.Strings("other")).ToEqual([]string{})
-	spec.Expect(typed.StringsOr("names", []string{"c", "d"})).ToEqual([]string{"a", "b"})
-	spec.Expect(typed.StringsOr("other", []string{"c", "d"})).ToEqual([]string{"c", "d"})
+	Expect(typed.Strings("names")).To.Equal([]string{"a", "b"})
+	Expect(len(typed.Strings("other"))).To.Equal(0)
+	Expect(typed.StringsOr("names", []string{"c", "d"})).To.Equal([]string{"a", "b"})
+	Expect(typed.StringsOr("other", []string{"c", "d"})).To.Equal([]string{"c", "d"})
 }
 
-func Test_Objects(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Objects() {
 	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
-	spec.Expect(typed.Objects("names")[0].Int("first")).ToEqual(1)
+	Expect(typed.Objects("names")[0].Int("first")).To.Equal(1)
 }
 
-func Test_Maps(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) Maps() {
 	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
-	spec.Expect(typed.Maps("names")[1]["second"]).ToEqual(2)
+	Expect(typed.Maps("names")[1]["second"]).To.Equal(2)
 }
 
-func Test_StringBool(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) StringBool() {
 	typed, _ := JsonString(`{"blocked":{"a":true,"b":false}}`)
 	m := typed.StringBool("blocked")
-	spec.Expect(m["a"]).ToEqual(true)
-	spec.Expect(m["b"]).ToEqual(false)
+	Expect(m["a"]).To.Equal(true)
+	Expect(m["b"]).To.Equal(false)
 }
 
-func Test_StringInt(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) StringInt() {
 	typed, _ := JsonString(`{"count":{"a":123,"b":43}}`)
 	m := typed.StringInt("count")
-	spec.Expect(m["a"]).ToEqual(123)
-	spec.Expect(m["b"]).ToEqual(43)
-	spec.Expect(m["xxz"]).ToEqual(0)
+	Expect(m["a"]).To.Equal(123)
+	Expect(m["b"]).To.Equal(43)
+	Expect(m["xxz"]).To.Equal(0)
 }
 
-func Test_StringFloat(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) StringFloat() {
 	typed, _ := JsonString(`{"rank":{"aa":3.4,"bz":4.2}}`)
 	m := typed.StringFloat("rank")
-	spec.Expect(m["aa"]).ToEqual(3.4)
-	spec.Expect(m["bz"]).ToEqual(4.2)
-	spec.Expect(m["xx"]).ToEqual(0.0)
+	Expect(m["aa"]).To.Equal(3.4)
+	Expect(m["bz"]).To.Equal(4.2)
+	Expect(m["xx"]).To.Equal(0.0)
 }
 
-func Test_StringString(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) StringString() {
 	typed, _ := JsonString(`{"atreides":{"leto":"ghanima","paul":"alia"}}`)
 	m := typed.StringString("atreides")
-	spec.Expect(m["leto"]).ToEqual("ghanima")
-	spec.Expect(m["paul"]).ToEqual("alia")
-	spec.Expect(m["vladimir"]).ToEqual("")
+	Expect(m["leto"]).To.Equal("ghanima")
+	Expect(m["paul"]).To.Equal("alia")
+	Expect(m["vladimir"]).To.Equal("")
 }
 
-func Test_StringObject(t *testing.T) {
-	spec := gspec.New(t)
+func (_ *TypedTests) StringObject() {
 	typed, _ := JsonString(`{"atreides":{"leto":{"sister": "ghanima"}, "goku": {"power": 9001}}}`)
 	m := typed.StringObject("atreides")
-	spec.Expect(m["leto"].String("sister")).ToEqual("ghanima")
-	spec.Expect(m["goku"].Int("power")).ToEqual(9001)
+	Expect(m["leto"].String("sister")).To.Equal("ghanima")
+	Expect(m["goku"].Int("power")).To.Equal(9001)
 }
 
 func build(values ...interface{}) map[string]interface{} {
