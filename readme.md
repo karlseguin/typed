@@ -113,3 +113,7 @@ func main() {
   fmt.Println(typed.StringBool("blocked")["10.10.1.1"])
 }
 ```
+
+# Misc
+
+The [JsonWriter](https://github.com/karlseguin/jsonwriter) library provides the opposite functionality: a lightweight approaching to writing JSON data.
