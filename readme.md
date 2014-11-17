@@ -35,10 +35,16 @@ Once we have a typed wrapper, we can use various functions to navigate the struc
 - Int(key string) int
 - Float(key string) float64
 - String(key string) string
+
 - BoolOr(key string, defaultValue bool) bool
 - IntOr(key string, defaultValue int) int
 - FloatOr(key string, defaultValue float64) float64
 - StringOr(key string, defaultValue string) string
+
+- BoolIf(key string) (bool, bool)
+- IntIf(key string) (int, bool)
+- FloatIf(key string) (float, bool)
+- StringIf(key string) (string, bool)
 
 We can also extract arrays via:
 
@@ -54,8 +60,13 @@ We can also extract arrays via:
 We can extract nested objects, other as another typed wrapper, or as a raw `map[string]interface{}`:
 
 - Object(key string) Typed
+- ObjectOr(key string, map[string]interface) Typed
+- ObjectIf(key string) (Typed, bool)
 - Objects(key string) []Typed
+
 - Map(key string) map[string]interface{}
+- MaoOr(key string, map[string]interface) map[string]interface{}
+- MapIf(key string) (map[string]interface{}, bool)
 - Maps(key string) []map[string]interface{}
 
 We can extract key value pairs:

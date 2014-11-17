@@ -43,14 +43,23 @@ func (t Typed) Bool(key string) bool {
 // Returns a boolean at the key, or the specified
 // value if it doesn't exist or isn't a bool
 func (t Typed) BoolOr(key string, d bool) bool {
-	value, exists := t[key]
-	if exists == false {
-		return d
-	}
-	if n, ok := value.(bool); ok {
-		return n
+	if value, exists := t.BoolIf(key); exists {
+		return value
 	}
 	return d
+}
+
+// Returns a boolean at the key and whether
+// or not the key existed and the value was a bolean
+func (t Typed) BoolIf(key string) (bool, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return false, false
+	}
+	if n, ok := value.(bool); ok {
+		return n, true
+	}
+	return false, false
 }
 
 func (t Typed) Int(key string) int {
@@ -60,17 +69,26 @@ func (t Typed) Int(key string) int {
 // Returns a int at the key, or the specified
 // value if it doesn't exist or isn't a int
 func (t Typed) IntOr(key string, d int) int {
-	value, exists := t[key]
-	if exists == false {
-		return d
-	}
-	if n, ok := value.(int); ok {
-		return n
-	}
-	if f, ok := value.(float64); ok {
-		return int(f)
+	if value, exists := t.IntIf(key); exists {
+		return value
 	}
 	return d
+}
+
+// Returns an int at the key and whether
+// or not the key existed and the value was an int
+func (t Typed) IntIf(key string) (int, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return 0, false
+	}
+	if n, ok := value.(int); ok {
+		return n, true
+	}
+	if f, ok := value.(float64); ok {
+		return int(f), true
+	}
+	return 0, false
 }
 
 func (t Typed) Float(key string) float64 {
@@ -80,14 +98,23 @@ func (t Typed) Float(key string) float64 {
 // Returns a float at the key, or the specified
 // value if it doesn't exist or isn't a float
 func (t Typed) FloatOr(key string, d float64) float64 {
-	value, exists := t[key]
-	if exists == false {
-		return d
-	}
-	if n, ok := value.(float64); ok {
-		return n
+	if value, exists := t.FloatIf(key); exists {
+		return value
 	}
 	return d
+}
+
+// Returns an float at the key and whether
+// or not the key existed and the value was an float
+func (t Typed) FloatIf(key string) (float64, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return 0, false
+	}
+	if n, ok := value.(float64); ok {
+		return n, true
+	}
+	return 0, false
 }
 
 func (t Typed) String(key string) string {
@@ -97,14 +124,23 @@ func (t Typed) String(key string) string {
 // Returns a string at the key, or the specified
 // value if it doesn't exist or isn't a strin
 func (t Typed) StringOr(key string, d string) string {
-	value, exists := t[key]
-	if exists == false {
-		return d
-	}
-	if n, ok := value.(string); ok {
-		return n
+	if value, exists := t.StringIf(key); exists {
+		return value
 	}
 	return d
+}
+
+// Returns an string at the key and whether
+// or not the key existed and the value was an string
+func (t Typed) StringIf(key string) (string, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return "", false
+	}
+	if n, ok := value.(string); ok {
+		return n, true
+	}
+	return "", false
 }
 
 // Returns a Typed helper at the key
@@ -123,14 +159,23 @@ func (t Typed) Object(key string) Typed {
 // default if the key doesn't exist or if the key isn't
 // a map[string]interface{}
 func (t Typed) ObjectOr(key string, d map[string]interface{}) Typed {
-	value, exists := t[key]
-	if exists == false {
-		return Typed(d)
-	}
-	if n, ok := value.(map[string]interface{}); ok {
-		return Typed(n)
+	if value, exists := t.ObjectIf(key); exists {
+		return value
 	}
 	return Typed(d)
+}
+
+// Returns a Typed helper at the key and whether
+// or not the key existed and the value was an map[string]interface{}
+func (t Typed) ObjectIf(key string) (Typed, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return nil, false
+	}
+	if n, ok := value.(map[string]interface{}); ok {
+		return Typed(n), true
+	}
+	return nil, false
 }
 
 // Returns a map[string]interface{} at the key
@@ -144,14 +189,23 @@ func (t Typed) Map(key string) map[string]interface{} {
 // or the specified default if the key doesn't exist
 // or if the key isn't a map[string]interface
 func (t Typed) MapOr(key string, d map[string]interface{}) map[string]interface{} {
-	value, exists := t[key]
-	if exists == false {
-		return d
-	}
-	if n, ok := value.(map[string]interface{}); ok {
-		return n
+	if value, exists := t.MapIf(key); exists {
+		return value
 	}
 	return d
+}
+
+// Returns a map[string]interface at the key and whether
+// or not the key existed and the value was an map[string]interface{}
+func (t Typed) MapIf(key string) (map[string]interface{}, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return nil, false
+	}
+	if n, ok := value.(map[string]interface{}); ok {
+		return n, true
+	}
+	return nil, false
 }
 
 // Returns an slice of boolean, or an nil slice

@@ -35,32 +35,45 @@ func (_ *TypedTests) Int() {
 	typed := New(build("port", 84))
 	Expect(typed.Int("port")).To.Equal(84)
 	Expect(typed.IntOr("port", 11)).To.Equal(84)
+	Expect(typed.IntIf("port")).To.Equal(84, true)
+
 	Expect(typed.Int("other")).To.Equal(0)
 	Expect(typed.IntOr("other", 33)).To.Equal(33)
+	Expect(typed.IntIf("other")).To.Equal(0, false)
 }
 
 func (_ *TypedTests) Float() {
 	typed := New(build("pi", 3.14))
 	Expect(typed.Float("pi")).To.Equal(3.14)
 	Expect(typed.FloatOr("pi", 11.3)).To.Equal(3.14)
+	Expect(typed.FloatIf("pi")).To.Equal(3.14, true)
+
 	Expect(typed.Float("other")).To.Equal(0.0)
 	Expect(typed.FloatOr("other", 11.3)).To.Equal(11.3)
+	Expect(typed.FloatIf("other")).To.Equal(0.0, false)
+
 }
 
 func (_ *TypedTests) String() {
 	typed := New(build("host", "localhost"))
 	Expect(typed.String("host")).To.Equal("localhost")
 	Expect(typed.StringOr("host", "openmymind.net")).To.Equal("localhost")
+	Expect(typed.StringIf("host")).To.Equal("localhost", true)
+
 	Expect(typed.String("other")).To.Equal("")
 	Expect(typed.StringOr("other", "openmymind.net")).To.Equal("openmymind.net")
+	Expect(typed.StringIf("other")).To.Equal("", false)
 }
 
 func (_ *TypedTests) Object() {
 	typed := New(build("server", build("port", 32)))
 	Expect(typed.Object("server").Int("port")).To.Equal(32)
 	Expect(typed.ObjectOr("server", build("a", "b")).Int("port")).To.Equal(32)
+	Expect(typed.ObjectIf("server")).To.Equal(NotNil, true)
+
 	Expect(len(typed.Object("other"))).To.Equal(0)
 	Expect(typed.ObjectOr("other", build("x", "y")).String("x")).To.Equal("y")
+	Expect(typed.ObjectIf("other")).To.Equal(nil, false)
 }
 
 func (_ *TypedTests) Bools() {
