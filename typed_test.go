@@ -11,19 +11,19 @@ func Test_Typed(t *testing.T) {
 	Expectify(new(TypedTests), t)
 }
 
-func (_ *TypedTests) Json() {
+func (_ TypedTests) Json() {
 	typed, err := Json([]byte(`{"power": 9002}`))
 	Expect(typed.Int("power")).To.Equal(9002)
 	Expect(err).To.Equal(nil)
 }
 
-func (_ *TypedTests) JsonFile() {
+func (_ TypedTests) JsonFile() {
 	typed, err := JsonFile("test.json")
 	Expect(typed.String("name")).To.Equal("leto")
 	Expect(err).To.Equal(nil)
 }
 
-func (_ *TypedTests) Bool() {
+func (_ TypedTests) Bool() {
 	typed := New(build("log", true))
 	Expect(typed.Bool("log")).To.Equal(true)
 	Expect(typed.BoolOr("log", false)).To.Equal(true)
@@ -31,7 +31,7 @@ func (_ *TypedTests) Bool() {
 	Expect(typed.BoolOr("other", true)).To.Equal(true)
 }
 
-func (_ *TypedTests) Int() {
+func (_ TypedTests) Int() {
 	typed := New(build("port", 84))
 	Expect(typed.Int("port")).To.Equal(84)
 	Expect(typed.IntOr("port", 11)).To.Equal(84)
@@ -42,7 +42,7 @@ func (_ *TypedTests) Int() {
 	Expect(typed.IntIf("other")).To.Equal(0, false)
 }
 
-func (_ *TypedTests) Float() {
+func (_ TypedTests) Float() {
 	typed := New(build("pi", 3.14))
 	Expect(typed.Float("pi")).To.Equal(3.14)
 	Expect(typed.FloatOr("pi", 11.3)).To.Equal(3.14)
@@ -54,7 +54,7 @@ func (_ *TypedTests) Float() {
 
 }
 
-func (_ *TypedTests) String() {
+func (_ TypedTests) String() {
 	typed := New(build("host", "localhost"))
 	Expect(typed.String("host")).To.Equal("localhost")
 	Expect(typed.StringOr("host", "openmymind.net")).To.Equal("localhost")
@@ -65,7 +65,7 @@ func (_ *TypedTests) String() {
 	Expect(typed.StringIf("other")).To.Equal("", false)
 }
 
-func (_ *TypedTests) Object() {
+func (_ TypedTests) Object() {
 	typed := New(build("server", build("port", 32)))
 	Expect(typed.Object("server").Int("port")).To.Equal(32)
 	Expect(typed.ObjectOr("server", build("a", "b")).Int("port")).To.Equal(32)
@@ -76,7 +76,7 @@ func (_ *TypedTests) Object() {
 	Expect(typed.ObjectIf("other")).To.Equal(nil, false)
 }
 
-func (_ *TypedTests) Bools() {
+func (_ TypedTests) Bools() {
 	typed := New(build("boring", []interface{}{true, false}))
 	Expect(typed.Bools("boring")).To.Equal([]bool{true, false})
 	Expect(len(typed.Bools("other"))).To.Equal(0)
@@ -84,7 +84,7 @@ func (_ *TypedTests) Bools() {
 	Expect(typed.BoolsOr("other", []bool{false, true})).To.Equal([]bool{false, true})
 }
 
-func (_ *TypedTests) Ints() {
+func (_ TypedTests) Ints() {
 	typed := New(build("scores", []interface{}{2, 1}))
 	Expect(typed.Ints("scores")).To.Equal([]int{2, 1})
 	Expect(len(typed.Ints("other"))).To.Equal(0)
@@ -92,12 +92,12 @@ func (_ *TypedTests) Ints() {
 	Expect(typed.IntsOr("other", []int{3, 4})).To.Equal([]int{3, 4})
 }
 
-func (_ *TypedTests) Ints_WithFloats() {
+func (_ TypedTests) Ints_WithFloats() {
 	typed := New(build("scores", []interface{}{2.1, 7.39}))
 	Expect(typed.Ints("scores")).To.Equal([]int{2, 7})
 }
 
-func (_ *TypedTests) Floats() {
+func (_ TypedTests) Floats() {
 	typed := New(build("ranks", []interface{}{2.1, 1.2}))
 	Expect(typed.Floats("ranks")).To.Equal([]float64{2.1, 1.2})
 	Expect(len(typed.Floats("other"))).To.Equal(0)
@@ -105,7 +105,7 @@ func (_ *TypedTests) Floats() {
 	Expect(typed.FloatsOr("other", []float64{3.1, 4.2})).To.Equal([]float64{3.1, 4.2})
 }
 
-func (_ *TypedTests) Strings() {
+func (_ TypedTests) Strings() {
 	typed := New(build("names", []interface{}{"a", "b"}))
 	Expect(typed.Strings("names")).To.Equal([]string{"a", "b"})
 	Expect(len(typed.Strings("other"))).To.Equal(0)
@@ -113,24 +113,24 @@ func (_ *TypedTests) Strings() {
 	Expect(typed.StringsOr("other", []string{"c", "d"})).To.Equal([]string{"c", "d"})
 }
 
-func (_ *TypedTests) Objects() {
+func (_ TypedTests) Objects() {
 	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
 	Expect(typed.Objects("names")[0].Int("first")).To.Equal(1)
 }
 
-func (_ *TypedTests) Maps() {
+func (_ TypedTests) Maps() {
 	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
 	Expect(typed.Maps("names")[1]["second"]).To.Equal(2)
 }
 
-func (_ *TypedTests) StringBool() {
+func (_ TypedTests) StringBool() {
 	typed, _ := JsonString(`{"blocked":{"a":true,"b":false}}`)
 	m := typed.StringBool("blocked")
 	Expect(m["a"]).To.Equal(true)
 	Expect(m["b"]).To.Equal(false)
 }
 
-func (_ *TypedTests) StringInt() {
+func (_ TypedTests) StringInt() {
 	typed, _ := JsonString(`{"count":{"a":123,"b":43}}`)
 	m := typed.StringInt("count")
 	Expect(m["a"]).To.Equal(123)
@@ -138,7 +138,7 @@ func (_ *TypedTests) StringInt() {
 	Expect(m["xxz"]).To.Equal(0)
 }
 
-func (_ *TypedTests) StringFloat() {
+func (_ TypedTests) StringFloat() {
 	typed, _ := JsonString(`{"rank":{"aa":3.4,"bz":4.2}}`)
 	m := typed.StringFloat("rank")
 	Expect(m["aa"]).To.Equal(3.4)
@@ -146,7 +146,7 @@ func (_ *TypedTests) StringFloat() {
 	Expect(m["xx"]).To.Equal(0.0)
 }
 
-func (_ *TypedTests) StringString() {
+func (_ TypedTests) StringString() {
 	typed, _ := JsonString(`{"atreides":{"leto":"ghanima","paul":"alia"}}`)
 	m := typed.StringString("atreides")
 	Expect(m["leto"]).To.Equal("ghanima")
@@ -154,11 +154,25 @@ func (_ *TypedTests) StringString() {
 	Expect(m["vladimir"]).To.Equal("")
 }
 
-func (_ *TypedTests) StringObject() {
+func (_ TypedTests) StringObject() {
 	typed, _ := JsonString(`{"atreides":{"leto":{"sister": "ghanima"}, "goku": {"power": 9001}}}`)
 	m := typed.StringObject("atreides")
 	Expect(m["leto"].String("sister")).To.Equal("ghanima")
 	Expect(m["goku"].Int("power")).To.Equal(9001)
+}
+
+func (_ TypedTests) ToBytes() {
+	typed, _ := JsonString(`{"atreides":{"leto":{"sister": "ghanima"}}, "goku": {"power": 9001}}`)
+	m, err := typed.ToBytes("goku")
+	Expect(err).To.Equal(nil)
+	Expect(string(m)).To.Equal(`{"power":9001}`)
+}
+
+func (_ TypedTests) ToBytesNotFound() {
+	typed, _ := JsonString(`{"atreides":{"leto":{"sister": "ghanima"}}, "goku": {"power": 9001}}`)
+	m, err := typed.ToBytes("other")
+	Expect(err).To.Equal(KeyNotFound)
+	Expect(string(m)).To.Equal("")
 }
 
 func build(values ...interface{}) map[string]interface{} {

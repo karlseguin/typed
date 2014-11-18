@@ -2,7 +2,14 @@ package typed
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
+)
+
+var (
+	// Used by ToBytes to indicate that the key was not
+	// present in the type
+	KeyNotFound = errors.New("Key not found")
 )
 
 // A Typed type helper for accessing a map
@@ -428,6 +435,23 @@ func (t Typed) StringObject(key string) map[string]Typed {
 		m[k] = Typed(value.(map[string]interface{}))
 	}
 	return m
+}
+
+// Marhals the type into a []byte.
+// If key isn't valid, KeyNotFound is returned.
+// If the typed doesn't represent valid JSON, a relevant
+// JSON error is returned
+func (t Typed) ToBytes(key string) ([]byte, error) {
+	o, exists := t[key]
+	if exists == false {
+		return nil, KeyNotFound
+	}
+	data, err := json.Marshal(o)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+
 }
 
 func (t Typed) getmap(key string) (raw map[string]interface{}, exists bool) {

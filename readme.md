@@ -77,6 +77,10 @@ We can extract key value pairs:
 - StringString(key string) map[string]string
 - StringObject(key string) map[string]Typed
 
+## Misc
+
+`ToBytes(key string) ([]byte, error)` can be used to get the JSON data, as a []byte, from the Type. `KeyNotFound` will be returned if the key isn't valid.
+
 ## Example
 
 ```go
