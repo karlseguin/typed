@@ -41,6 +41,41 @@ func JsonFile(path string) (Typed, error) {
 	return Json(data)
 }
 
+// Create an array of Typed helpers
+// Used for when the root is an array which contains objects
+func JsonArray(data []byte) ([]Typed, error) {
+	var m []interface{}
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return nil, err
+	}
+	l := len(m)
+	if l == 0 {
+		return nil, nil
+	}
+	typed := make([]Typed, l)
+	for i := 0; i < l; i++ {
+		typed[i] = m[i].(map[string]interface{})
+	}
+	return typed, nil
+}
+
+// Create an array of Typed helpers from a string
+// Used for when the root is an array which contains objects
+func JsonStringArray(data string) ([]Typed, error) {
+	return JsonArray([]byte(data))
+}
+
+// Create an array of Typed helpers from a file
+// Used for when the root is an array which contains objects
+func JsonFileArary(path string) ([]Typed, error) {
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return JsonArray(data)
+}
+
 // Returns a boolean at the key, or false if it
 // doesn't exist, or if it isn't a bool
 func (t Typed) Bool(key string) bool {

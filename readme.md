@@ -79,7 +79,30 @@ We can extract key value pairs:
 
 ## Misc
 
+### To Bytes
 `ToBytes(key string) ([]byte, error)` can be used to get the JSON data, as a []byte, from the Type. `KeyNotFound` will be returned if the key isn't valid.
+
+
+### Root Array
+
+Support for JSON document with arrays at their root is supported so long as the array contains complex structures (map[string]interface{}).
+
+For example, this **is** supported:
+
+```json
+[
+  {"name":"leto"},
+  {"name":"ghanima"}
+]
+```
+
+While this **is not** supported:
+
+```json
+[1, 2, 3, null, "abc"]
+```
+
+Use the `JsonArray(data []byte)`, `JsonStringArray(data string)` and `JsonFileArary(path string)` to receive an `[]Typed`
 
 ## Example
 

@@ -175,6 +175,12 @@ func (_ TypedTests) ToBytesNotFound() {
 	Expect(string(m)).To.Equal("")
 }
 
+func (_ TypedTests) RootArray() {
+	typed, _ := JsonStringArray(`[{"id":1},{"id":2}]`)
+	Expect(typed[0].Int("id")).To.Equal(1)
+	Expect(typed[1].Int("id")).To.Equal(2)
+}
+
 func build(values ...interface{}) map[string]interface{} {
 	m := make(map[string]interface{}, len(values))
 	for i := 0; i < len(values); i += 2 {
