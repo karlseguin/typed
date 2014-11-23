@@ -181,6 +181,13 @@ func (_ TypedTests) RootArray() {
 	Expect(typed[1].Int("id")).To.Equal(2)
 }
 
+func (_ TypedTests) RootArrayPrimitives() {
+	typed, _ := JsonStringArray(`[-41, {"id":1}, 2]`)
+	Expect(typed[0].Int("0")).To.Equal(-41)
+	Expect(typed[1].Int("id")).To.Equal(1)
+	Expect(typed[2].Int("0")).To.Equal(2)
+}
+
 func build(values ...interface{}) map[string]interface{} {
 	m := make(map[string]interface{}, len(values))
 	for i := 0; i < len(values); i += 2 {

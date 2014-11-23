@@ -55,7 +55,12 @@ func JsonArray(data []byte) ([]Typed, error) {
 	}
 	typed := make([]Typed, l)
 	for i := 0; i < l; i++ {
-		typed[i] = m[i].(map[string]interface{})
+		value := m[i]
+		if t, ok := value.(map[string]interface{}); ok {
+			typed[i] = t
+		} else {
+			typed[i] = map[string]interface{}{"0": value}
+		}
 	}
 	return typed, nil
 }

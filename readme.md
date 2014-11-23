@@ -31,78 +31,51 @@ typed, err := typed.JsonFile(path)
 
 Once we have a typed wrapper, we can use various functions to navigate the structure:
 
-- Bool(key string) bool
-- Int(key string) int
-- Float(key string) float64
-- String(key string) string
+- `Bool(key string) bool`
+- `Int(key string) int`
+- `Float(key string) float64`
+- `String(key string) string`
 
-- BoolOr(key string, defaultValue bool) bool
-- IntOr(key string, defaultValue int) int
-- FloatOr(key string, defaultValue float64) float64
-- StringOr(key string, defaultValue string) string
+- `BoolOr(key string, defaultValue bool) bool`
+- `IntOr(key string, defaultValue int) int`
+- `FloatOr(key string, defaultValue float64) float64`
+- `StringOr(key string, defaultValue string) string`
 
-- BoolIf(key string) (bool, bool)
-- IntIf(key string) (int, bool)
-- FloatIf(key string) (float, bool)
-- StringIf(key string) (string, bool)
+- `BoolIf(key string) (bool, bool)`
+- `IntIf(key string) (int, bool)`
+- `FloatIf(key string) (float, bool)`
+- `StringIf(key string) (string, bool)`
 
 We can also extract arrays via:
 
-- Bools(key string) []bool
-- Ints(key string) []int
-- Floats(key string) []float64
-- Strings(key string) []string
-- StringsOr(key string, defaultValue []string) []string
-- BoolsOr(key string, defaultValue []bool) []bool
-- IntsOr(key string, defaultValue []int) []int
-- FloatsOr(key string, defaultValue []float64) []float64
+- `Bools(key string) []bool`
+- `Ints(key string) []int`
+- `Floats(key string) []float64`
+- `Strings(key string) []string`
+- `StringsOr(key string, defaultValue []string) []string`
+- `BoolsOr(key string, defaultValue []bool) []bool`
+- `IntsOr(key string, defaultValue []int) []int`
+- `FloatsOr(key string, defaultValue []float64) []float64`
 
 We can extract nested objects, other as another typed wrapper, or as a raw `map[string]interface{}`:
 
-- Object(key string) Typed
-- ObjectOr(key string, map[string]interface) Typed
-- ObjectIf(key string) (Typed, bool)
-- Objects(key string) []Typed
+- `Object(key string) Typed`
+- `ObjectOr(key string, map[string]interface) Typed`
+- `ObjectIf(key string) (Typed, bool)`
+- `Objects(key string) []Typed`
 
-- Map(key string) map[string]interface{}
-- MaoOr(key string, map[string]interface) map[string]interface{}
-- MapIf(key string) (map[string]interface{}, bool)
-- Maps(key string) []map[string]interface{}
+- `Map(key string) map[string]interface{}`
+- `MaoOr(key string, map[string]interface) map[string]interface{}`
+- `MapIf(key string) (map[string]interface{}, bool)`
+- `Maps(key string) []map[string]interface{}`
 
 We can extract key value pairs:
 
-- StringBool(key string) map[string]bool
-- StringInt(key string) map[string]int
-- StringFloat(key string) map[string]float64
-- StringString(key string) map[string]string
-- StringObject(key string) map[string]Typed
-
-## Misc
-
-### To Bytes
-`ToBytes(key string) ([]byte, error)` can be used to get the JSON data, as a []byte, from the Type. `KeyNotFound` will be returned if the key isn't valid.
-
-
-### Root Array
-
-Support for JSON document with arrays at their root is supported so long as the array contains complex structures (map[string]interface{}).
-
-For example, this **is** supported:
-
-```json
-[
-  {"name":"leto"},
-  {"name":"ghanima"}
-]
-```
-
-While this **is not** supported:
-
-```json
-[1, 2, 3, null, "abc"]
-```
-
-Use the `JsonArray(data []byte)`, `JsonStringArray(data string)` and `JsonFileArary(path string)` to receive an `[]Typed`
+- `StringBool(key string) map[string]bool`
+- `StringInt(key string) map[string]int`
+- `StringFloat(key string) map[string]float64`
+- `StringString(key string) map[string]string`
+- `StringObject(key string) map[string]Typed`
 
 ## Example
 
@@ -131,7 +104,7 @@ func main() {
     "10.10.1.1": true
   }
 }`
-  typed, err := typed.Json([]byte(json))
+  typed, err := typed.JsonString(json)
   if err != nil {
     fmt.Println(err)
   }
@@ -153,5 +126,29 @@ func main() {
 ```
 
 # Misc
+
+## To Bytes
+`ToBytes(key string) ([]byte, error)` can be used to get the JSON data, as a []byte, from the Type. `KeyNotFound` will be returned if the key isn't valid.
+
+
+## Root Array
+
+Support for JSON document with arrays at their root is supported. Use the `JsonArray(data []byte)`, `JsonStringArray(data string)` and `JsonFileArary(path string)` to receive an `[]Typed`
+
+If the array has primitive values, the syntax is a little awkward. The key for the field is "0":
+
+```go
+json := `[1, {"name": "leto"}, "spice"]`
+
+typed, err := typed, err := typed.JsonStringArray(json)
+if err != nil {
+  panic(err)
+}
+println(typed[0].Int("0"))
+println(typed[1].String("name"))
+println(typed[2].String("0"))
+```
+
+## JsonWriter
 
 The [JsonWriter](https://github.com/karlseguin/jsonwriter) library provides the opposite functionality: a lightweight approaching to writing JSON data.
