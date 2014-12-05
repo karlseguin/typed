@@ -35,16 +35,19 @@ Once we have a typed wrapper, we can use various functions to navigate the struc
 - `Int(key string) int`
 - `Float(key string) float64`
 - `String(key string) string`
+- `Interface(key string) interface{}`
 
 - `BoolOr(key string, defaultValue bool) bool`
 - `IntOr(key string, defaultValue int) int`
 - `FloatOr(key string, defaultValue float64) float64`
 - `StringOr(key string, defaultValue string) string`
+- `InterfaceOr(key string, defaultValue interface{}) interface{}`
 
 - `BoolIf(key string) (bool, bool)`
 - `IntIf(key string) (int, bool)`
 - `FloatIf(key string) (float, bool)`
 - `StringIf(key string) (string, bool)`
+- `InterfaceIf(key string) (interface{}, bool)`
 
 We can also extract arrays via:
 

@@ -212,6 +212,29 @@ func (t Typed) ObjectOr(key string, d map[string]interface{}) Typed {
 	return Typed(d)
 }
 
+func (t Typed) Interface(key string) interface{} {
+	return t.InterfaceOr(key, nil)
+}
+
+// Returns a string at the key, or the specified
+// value if it doesn't exist or isn't a strin
+func (t Typed) InterfaceOr(key string, d interface{}) interface{} {
+	if value, exists := t.InterfaceIf(key); exists {
+		return value
+	}
+	return d
+}
+
+// Returns an string at the key and whether
+// or not the key existed and the value was an string
+func (t Typed) InterfaceIf(key string) (interface{}, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return nil, false
+	}
+	return value, true
+}
+
 // Returns a Typed helper at the key and whether
 // or not the key existed and the value was an map[string]interface{}
 func (t Typed) ObjectIf(key string) (Typed, bool) {

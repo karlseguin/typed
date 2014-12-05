@@ -76,6 +76,17 @@ func (_ TypedTests) Object() {
 	Expect(typed.ObjectIf("other")).To.Equal(nil, false)
 }
 
+func (_ TypedTests) Interface() {
+	typed := New(build("host", "localhost"))
+	Expect(typed.Interface("host").(string)).To.Equal("localhost")
+	Expect(typed.InterfaceOr("host", "openmymind.net").(string)).To.Equal("localhost")
+	Expect(typed.InterfaceIf("host")).To.Equal(interface{}("localhost"), true)
+
+	Expect(typed.Interface("other")).To.Equal(nil)
+	Expect(typed.InterfaceOr("other", "openmymind.net").(string)).To.Equal("openmymind.net")
+	Expect(typed.InterfaceIf("other")).To.Equal(nil, false)
+}
+
 func (_ TypedTests) Bools() {
 	typed := New(build("boring", []interface{}{true, false}))
 	Expect(typed.Bools("boring")).To.Equal([]bool{true, false})
