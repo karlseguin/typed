@@ -491,7 +491,11 @@ func (t Typed) ToBytes(key string) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
 
+func (t Typed) Exists(key string) bool {
+	_, exists := t[key]
+	return exists
 }
 
 func (t Typed) getmap(key string) (raw map[string]interface{}, exists bool) {

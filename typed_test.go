@@ -188,6 +188,12 @@ func (_ TypedTests) RootArrayPrimitives() {
 	Expect(typed[2].Int("0")).To.Equal(2)
 }
 
+func (_ TypedTests) Exists() {
+	typed := New(build("power", 9001))
+	Expect(typed.Exists("power")).To.Equal(true)
+	Expect(typed.Exists("spice")).To.Equal(false)
+}
+
 func build(values ...interface{}) map[string]interface{} {
 	m := make(map[string]interface{}, len(values))
 	for i := 0; i < len(values); i += 2 {
