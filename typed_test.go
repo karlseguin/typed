@@ -179,6 +179,13 @@ func (_ TypedTests) ToBytes() {
 	Expect(string(m)).To.Equal(`{"power":9001}`)
 }
 
+func (_ TypedTests) ToBytesSelf() {
+	typed, _ := JsonString(`{"atreides":{"leto":{"sister": "ghanima"}}, "goku": {"power": 9001}}`)
+	m, err := typed.Object("atreides").ToBytes("")
+	Expect(err).To.Equal(nil)
+	Expect(string(m)).To.Equal(`{"leto":{"sister":"ghanima"}}`)
+}
+
 func (_ TypedTests) ToBytesNotFound() {
 	typed, _ := JsonString(`{"atreides":{"leto":{"sister": "ghanima"}}, "goku": {"power": 9001}}`)
 	m, err := typed.ToBytes("other")

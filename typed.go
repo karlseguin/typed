@@ -505,9 +505,15 @@ func (t Typed) StringObject(key string) map[string]Typed {
 // If the typed doesn't represent valid JSON, a relevant
 // JSON error is returned
 func (t Typed) ToBytes(key string) ([]byte, error) {
-	o, exists := t[key]
-	if exists == false {
-		return nil, KeyNotFound
+	var o interface{}
+	if len(key) == 0 {
+		o = t
+	} else {
+		exists := false
+		o, exists = t[key]
+		if exists == false {
+			return nil, KeyNotFound
+		}
 	}
 	data, err := json.Marshal(o)
 	if err != nil {
