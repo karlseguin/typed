@@ -522,6 +522,14 @@ func (t Typed) ToBytes(key string) ([]byte, error) {
 	return data, nil
 }
 
+func (t Typed) MustBytes(key string) []byte {
+	data, err := t.ToBytes(key)
+	if err != nil {
+		panic(err)
+	}
+	return data
+}
+
 func (t Typed) Exists(key string) bool {
 	_, exists := t[key]
 	return exists

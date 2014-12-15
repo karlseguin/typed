@@ -133,6 +133,7 @@ func main() {
 ## To Bytes
 `ToBytes(key string) ([]byte, error)` can be used to get the JSON data, as a []byte, from the Type. `KeyNotFound` will be returned if the key isn't valid.
 
+Alternatively, `MustBytes(key string) []byte` can be used. It will panic on error.
 
 ## Root Array
 
