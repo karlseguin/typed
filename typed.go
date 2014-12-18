@@ -515,6 +515,9 @@ func (t Typed) ToBytes(key string) ([]byte, error) {
 			return nil, KeyNotFound
 		}
 	}
+	if o == nil {
+		return nil, nil
+	}
 	data, err := json.Marshal(o)
 	if err != nil {
 		return nil, err

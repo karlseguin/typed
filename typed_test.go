@@ -179,6 +179,13 @@ func (_ TypedTests) ToBytes() {
 	Expect(string(m)).To.Equal(`{"power":9001}`)
 }
 
+func (_ TypedTests) ToBytesNullHandling() {
+	typed, _ := JsonString(`{"atreides":null}`)
+	m, err := typed.ToBytes("atreides")
+	Expect(err).To.Equal(nil)
+	Expect(m).To.Equal(nil)
+}
+
 func (_ TypedTests) MustBytes() {
 	typed, _ := JsonString(`{"atreides":{"leto":{"sister": "ghanima"}}, "goku": {"power": 9001}}`)
 	m := typed.MustBytes("goku")
