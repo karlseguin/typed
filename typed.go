@@ -10,6 +10,7 @@ var (
 	// Used by ToBytes to indicate that the key was not
 	// present in the type
 	KeyNotFound = errors.New("Key not found")
+	Empty = Typed(nil)
 )
 
 // A Typed type helper for accessing a map
