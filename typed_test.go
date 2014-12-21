@@ -103,6 +103,14 @@ func (_ TypedTests) Ints() {
 	Expect(typed.IntsOr("other", []int{3, 4})).To.Equal([]int{3, 4})
 }
 
+func (_ TypedTests) Ints64() {
+	typed := New(build("scores", []interface{}{2, 1}))
+	Expect(typed.Ints64("scores")).To.Equal([]int64{2, 1})
+	Expect(len(typed.Ints64("other"))).To.Equal(0)
+	Expect(typed.Ints64Or("scores", []int64{3, 4})).To.Equal([]int64{2, 1})
+	Expect(typed.Ints64Or("other", []int64{3, 4})).To.Equal([]int64{3, 4})
+}
+
 func (_ TypedTests) Ints_WithFloats() {
 	typed := New(build("scores", []interface{}{2.1, 7.39}))
 	Expect(typed.Ints("scores")).To.Equal([]int{2, 7})

@@ -304,7 +304,7 @@ func (t Typed) BoolsOr(key string, d []bool) []bool {
 }
 
 // Returns an slice of ints, or the specified slice
-// Some work is done to handle the fact that JSON ints
+// Some conversion is done to handle the fact that JSON ints
 // are represented as floats.
 func (t Typed) Ints(key string) []int {
 	return t.IntsOr(key, nil)
@@ -312,7 +312,7 @@ func (t Typed) Ints(key string) []int {
 
 // Returns an slice of ints, or the specified slice
 // if the key doesn't exist or isn't a valid []int.
-// Some work is done to handle the fact that JSON ints
+// Some conversion is done to handle the fact that JSON ints
 // are represented as floats.
 func (t Typed) IntsOr(key string, d []int) []int {
 	value, exists := t[key]
@@ -337,6 +337,51 @@ func (t Typed) IntsOr(key string, d []int) []int {
 		case int:
 			for i := 0; i < l; i++ {
 				n[i] = a[i].(int)
+			}
+		}
+		return n
+	}
+	return d
+}
+
+// Returns an slice of ints64, or the specified slice
+// Some conversion is done to handle the fact that JSON ints
+// are represented as floats.
+func (t Typed) Ints64(key string) []int64 {
+	return t.Ints64Or(key, nil)
+}
+
+// Returns an slice of ints64, or the specified slice
+// if the key doesn't exist or isn't a valid []int.
+// Some conversion is done to handle the fact that JSON ints
+// are represented as floats.
+func (t Typed) Ints64Or(key string, d []int64) []int64 {
+	value, exists := t[key]
+	if exists == false {
+		return d
+	}
+	if n, ok := value.([]int64); ok {
+		return n
+	}
+	if a, ok := value.([]interface{}); ok {
+		l := len(a)
+		if l == 0 {
+			return d
+		}
+
+		n := make([]int64, l)
+		switch a[0].(type) {
+		case float64:
+			for i := 0; i < l; i++ {
+				n[i] = int64(a[i].(float64))
+			}
+		case int64:
+			for i := 0; i < l; i++ {
+				n[i] = a[i].(int64)
+			}
+		case int:
+			for i := 0; i < l; i++ {
+				n[i] = int64(a[i].(int))
 			}
 		}
 		return n

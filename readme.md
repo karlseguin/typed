@@ -53,11 +53,13 @@ We can also extract arrays via:
 
 - `Bools(key string) []bool`
 - `Ints(key string) []int`
+- `Ints64(key string) []int64`
 - `Floats(key string) []float64`
 - `Strings(key string) []string`
 - `StringsOr(key string, defaultValue []string) []string`
 - `BoolsOr(key string, defaultValue []bool) []bool`
 - `IntsOr(key string, defaultValue []int) []int`
+- `Ints64Or(key string, defaultValue []int64) []int64`
 - `FloatsOr(key string, defaultValue []float64) []float64`
 
 We can extract nested objects, other as another typed wrapper, or as a raw `map[string]interface{}`:
