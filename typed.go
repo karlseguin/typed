@@ -10,7 +10,7 @@ var (
 	// Used by ToBytes to indicate that the key was not
 	// present in the type
 	KeyNotFound = errors.New("Key not found")
-	Empty = Typed(nil)
+	Empty       = Typed(nil)
 )
 
 // A Typed type helper for accessing a map
@@ -26,6 +26,15 @@ func Json(data []byte) (Typed, error) {
 	var m map[string]interface{}
 	err := json.Unmarshal(data, &m)
 	return Typed(m), err
+}
+
+// Create a Typed helper from the given JSON bytes, panics on error
+func Must(data []byte) Typed {
+	var m map[string]interface{}
+	if err := json.Unmarshal(data, &m); err != nil {
+		panic(err)
+	}
+	return Typed(m)
 }
 
 // Create a Typed helper from the given JSON string
