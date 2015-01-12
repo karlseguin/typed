@@ -295,22 +295,36 @@ func (t Typed) Bools(key string) []bool {
 
 // Returns an slice of boolean, or the specified slice
 func (t Typed) BoolsOr(key string, d []bool) []bool {
+	n, ok := t.BoolsIf(key)
+	if ok {
+		return n
+	}
+	return d
+}
+
+// Returns a boolean slice + true if valid
+// Returns nil + false otherwise
+// (returns nil+false if one of the values is not a valid boolean)
+func (t Typed) BoolsIf(key string) ([]bool, bool) {
 	value, exists := t[key]
 	if exists == false {
-		return d
+		return nil, false
 	}
 	if n, ok := value.([]bool); ok {
-		return n
+		return n, true
 	}
 	if a, ok := value.([]interface{}); ok {
 		l := len(a)
 		n := make([]bool, l)
+		var ok bool
 		for i := 0; i < l; i++ {
-			n[i] = a[i].(bool)
+			if n[i], ok = a[i].(bool); ok == false {
+				return n, false
+			}
 		}
-		return n
+		return n, true
 	}
-	return d
+	return nil, false
 }
 
 // Returns an slice of ints, or the specified slice
@@ -325,17 +339,28 @@ func (t Typed) Ints(key string) []int {
 // Some conversion is done to handle the fact that JSON ints
 // are represented as floats.
 func (t Typed) IntsOr(key string, d []int) []int {
+	n, ok := t.IntsIf(key)
+	if ok {
+		return n
+	}
+	return d
+}
+
+// Returns a int slice + true if valid
+// Returns nil + false otherwise
+// (returns nil+false if one of the values is not a valid int)
+func (t Typed) IntsIf(key string) ([]int, bool) {
 	value, exists := t[key]
 	if exists == false {
-		return d
+		return nil, false
 	}
 	if n, ok := value.([]int); ok {
-		return n
+		return n, true
 	}
 	if a, ok := value.([]interface{}); ok {
 		l := len(a)
 		if l == 0 {
-			return d
+			return nil, false
 		}
 
 		n := make([]int, l)
@@ -348,10 +373,12 @@ func (t Typed) IntsOr(key string, d []int) []int {
 			for i := 0; i < l; i++ {
 				n[i] = a[i].(int)
 			}
+		default:
+			return n, false
 		}
-		return n
+		return n, true
 	}
-	return d
+	return nil, false
 }
 
 // Returns an slice of ints64, or the specified slice
@@ -361,22 +388,33 @@ func (t Typed) Ints64(key string) []int64 {
 	return t.Ints64Or(key, nil)
 }
 
-// Returns an slice of ints64, or the specified slice
+// Returns an slice of ints, or the specified slice
 // if the key doesn't exist or isn't a valid []int.
 // Some conversion is done to handle the fact that JSON ints
 // are represented as floats.
 func (t Typed) Ints64Or(key string, d []int64) []int64 {
+	n, ok := t.Ints64If(key)
+	if ok {
+		return n
+	}
+	return d
+}
+
+// Returns a boolean slice + true if valid
+// Returns nil + false otherwise
+// (returns nil+false if one of the values is not a valid boolean)
+func (t Typed) Ints64If(key string) ([]int64, bool) {
 	value, exists := t[key]
 	if exists == false {
-		return d
+		return nil, false
 	}
 	if n, ok := value.([]int64); ok {
-		return n
+		return n, true
 	}
 	if a, ok := value.([]interface{}); ok {
 		l := len(a)
 		if l == 0 {
-			return d
+			return nil, false
 		}
 
 		n := make([]int64, l)
@@ -393,10 +431,12 @@ func (t Typed) Ints64Or(key string, d []int64) []int64 {
 			for i := 0; i < l; i++ {
 				n[i] = int64(a[i].(int))
 			}
+		default:
+			return n, false
 		}
-		return n
+		return n, true
 	}
-	return d
+	return nil, false
 }
 
 // Returns an slice of floats, or a nil slice
@@ -407,22 +447,36 @@ func (t Typed) Floats(key string) []float64 {
 // Returns an slice of floats, or the specified slice
 // if the key doesn't exist or isn't a valid []float64
 func (t Typed) FloatsOr(key string, d []float64) []float64 {
+	n, ok := t.FloatsIf(key)
+	if ok {
+		return n
+	}
+	return d
+}
+
+// Returns a float slice + true if valid
+// Returns nil + false otherwise
+// (returns nil+false if one of the values is not a valid float)
+func (t Typed) FloatsIf(key string) ([]float64, bool) {
 	value, exists := t[key]
 	if exists == false {
-		return d
+		return nil, false
 	}
 	if n, ok := value.([]float64); ok {
-		return n
+		return n, true
 	}
 	if a, ok := value.([]interface{}); ok {
 		l := len(a)
 		n := make([]float64, l)
+		var ok bool
 		for i := 0; i < l; i++ {
-			n[i] = a[i].(float64)
+			if n[i], ok = a[i].(float64); ok == false {
+				return n, false
+			}
 		}
-		return n
+		return n, true
 	}
-	return nil
+	return nil, false
 }
 
 // Returns an slice of strings, or a nil slice
@@ -433,22 +487,36 @@ func (t Typed) Strings(key string) []string {
 // Returns an slice of strings, or the specified slice
 // if the key doesn't exist or isn't a valid []string
 func (t Typed) StringsOr(key string, d []string) []string {
+	n, ok := t.StringsIf(key)
+	if ok {
+		return n
+	}
+	return d
+}
+
+// Returns a string slice + true if valid
+// Returns nil + false otherwise
+// (returns nil+false if one of the values is not a valid string)
+func (t Typed) StringsIf(key string) ([]string, bool) {
 	value, exists := t[key]
 	if exists == false {
-		return d
+		return nil, false
 	}
 	if n, ok := value.([]string); ok {
-		return n
+		return n, true
 	}
 	if a, ok := value.([]interface{}); ok {
 		l := len(a)
 		n := make([]string, l)
+		var ok bool
 		for i := 0; i < l; i++ {
-			n[i] = a[i].(string)
+			if n[i], ok = a[i].(string); ok == false {
+				return n, false
+			}
 		}
-		return n
+		return n, true
 	}
-	return d
+	return nil, false
 }
 
 // Returns an slice of Typed helpers, or a nil slice
