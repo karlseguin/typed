@@ -137,6 +137,11 @@ func (_ TypedTests) Objects() {
 	Expect(typed.Objects("names")[0].Int("first")).To.Equal(1)
 }
 
+func (_ TypedTests) ObjectsAsMap() {
+	typed := New(build("names", []map[string]interface{}{build("first", 1), build("second", 2)}))
+	Expect(typed.Objects("names")[0].Int("first")).To.Equal(1)
+}
+
 func (_ TypedTests) Maps() {
 	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
 	Expect(typed.Maps("names")[1]["second"]).To.Equal(2)

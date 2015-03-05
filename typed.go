@@ -523,11 +523,19 @@ func (t Typed) StringsIf(key string) ([]string, bool) {
 func (t Typed) Objects(key string) []Typed {
 	value, exists := t[key]
 	if exists == true {
-		if a, ok := value.([]interface{}); ok {
-			l := len(a)
+		switch t := value.(type) {
+		case []interface{}:
+			l := len(t)
 			n := make([]Typed, l)
 			for i := 0; i < l; i++ {
-				n[i] = Typed(a[i].(map[string]interface{}))
+				n[i] = Typed(t[i].(map[string]interface{}))
+			}
+			return n
+		case []map[string]interface{}:
+			l := len(t)
+			n := make([]Typed, l)
+			for i := 0; i < l; i++ {
+				n[i] = Typed(t[i])
 			}
 			return n
 		}
