@@ -139,11 +139,17 @@ func (t Typed) IntIf(key string) (int, bool) {
 	if exists == false {
 		return 0, false
 	}
-	if n, ok := value.(int); ok {
-		return n, true
-	}
-	if f, ok := value.(float64); ok {
-		return int(f), true
+	switch t := value.(type) {
+	case int:
+		return t, true
+	case int16:
+		return int(t), true
+	case int32:
+		return int(t), true
+	case int64:
+		return int(t), true
+	case float64:
+		return int(t), true
 	}
 	return 0, false
 }
