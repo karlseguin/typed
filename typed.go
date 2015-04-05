@@ -106,6 +106,15 @@ func (t Typed) BoolOr(key string, d bool) bool {
 	return d
 }
 
+// Returns a bool or panics
+func (t Typed) BoolMust(key string) bool {
+	b, exists := t.BoolIf(key)
+	if exists == false {
+		panic("expected boolean value for " + key)
+	}
+	return b
+}
+
 // Returns a boolean at the key and whether
 // or not the key existed and the value was a bolean
 func (t Typed) BoolIf(key string) (bool, bool) {
@@ -130,6 +139,15 @@ func (t Typed) IntOr(key string, d int) int {
 		return value
 	}
 	return d
+}
+
+// Returns an int or panics
+func (t Typed) IntMust(key string) int {
+	i, exists := t.IntIf(key)
+	if exists == false {
+		panic("expected int value for " + key)
+	}
+	return i
 }
 
 // Returns an int at the key and whether
@@ -167,6 +185,15 @@ func (t Typed) FloatOr(key string, d float64) float64 {
 	return d
 }
 
+// Returns an float or panics
+func (t Typed) FloatMust(key string) float64 {
+	f, exists := t.FloatIf(key)
+	if exists == false {
+		panic("expected float value for " + key)
+	}
+	return f
+}
+
 // Returns an float at the key and whether
 // or not the key existed and the value was an float
 func (t Typed) FloatIf(key string) (float64, bool) {
@@ -191,6 +218,15 @@ func (t Typed) StringOr(key string, d string) string {
 		return value
 	}
 	return d
+}
+
+// Returns an string or panics
+func (t Typed) StringMust(key string) string {
+	s, exists := t.StringIf(key)
+	if exists == false {
+		panic("expected string value for " + key)
+	}
+	return s
 }
 
 // Returns an string at the key and whether
@@ -228,27 +264,13 @@ func (t Typed) ObjectOr(key string, d map[string]interface{}) Typed {
 	return Typed(d)
 }
 
-func (t Typed) Interface(key string) interface{} {
-	return t.InterfaceOr(key, nil)
-}
-
-// Returns a string at the key, or the specified
-// value if it doesn't exist or isn't a strin
-func (t Typed) InterfaceOr(key string, d interface{}) interface{} {
-	if value, exists := t.InterfaceIf(key); exists {
-		return value
-	}
-	return d
-}
-
-// Returns an string at the key and whether
-// or not the key existed and the value was an string
-func (t Typed) InterfaceIf(key string) (interface{}, bool) {
-	value, exists := t[key]
+// Returns an typed object or panics
+func (t Typed) ObjectMust(key string) Typed {
+	t, exists := t.ObjectIf(key)
 	if exists == false {
-		return nil, false
+		panic("expected map for " + key)
 	}
-	return value, true
+	return t
 }
 
 // Returns a Typed helper at the key and whether
@@ -262,6 +284,38 @@ func (t Typed) ObjectIf(key string) (Typed, bool) {
 		return Typed(n), true
 	}
 	return nil, false
+}
+
+func (t Typed) Interface(key string) interface{} {
+	return t.InterfaceOr(key, nil)
+}
+
+// Returns a string at the key, or the specified
+// value if it doesn't exist or isn't a strin
+func (t Typed) InterfaceOr(key string, d interface{}) interface{} {
+	if value, exists := t.InterfaceIf(key); exists {
+		return value
+	}
+	return d
+}
+
+// Returns an interface or panics
+func (t Typed) InterfaceMust(key string) interface{} {
+	i, exists := t.InterfaceIf(key)
+	if exists == false {
+		panic("expected map for " + key)
+	}
+	return i
+}
+
+// Returns an string at the key and whether
+// or not the key existed and the value was an string
+func (t Typed) InterfaceIf(key string) (interface{}, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return nil, false
+	}
+	return value, true
 }
 
 // Returns a map[string]interface{} at the key

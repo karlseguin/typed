@@ -35,18 +35,28 @@ Once we have a typed wrapper, we can use various functions to navigate the struc
 - `Int(key string) int`
 - `Float(key string) float64`
 - `String(key string) string`
+- `Object(key string) typed.Type`
 - `Interface(key string) interface{}`
 
 - `BoolOr(key string, defaultValue bool) bool`
 - `IntOr(key string, defaultValue int) int`
 - `FloatOr(key string, defaultValue float64) float64`
 - `StringOr(key string, defaultValue string) string`
+- `ObjectOr(key string, defaultValue map[string]interface{}) typed.Type`
 - `InterfaceOr(key string, defaultValue interface{}) interface{}`
+
+- `BoolMust(key string) bool`
+- `IntMust(key string) int`
+- `FloatMust(key string) float`
+- `StringMust(key string) string`
+- `ObjectMust(key string) typed.Type`
+- `InterfaceMust(key string) interface{}``
 
 - `BoolIf(key string) (bool, bool)`
 - `IntIf(key string) (int, bool)`
 - `FloatIf(key string) (float, bool)`
 - `StringIf(key string) (string, bool)`
+- `ObjectIf(key string) (typed.Type, bool)`
 - `InterfaceIf(key string) (interface{}, bool)`
 
 We can also extract arrays via:
