@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"time"
 )
 
 var (
@@ -212,7 +213,7 @@ func (t Typed) String(key string) string {
 }
 
 // Returns a string at the key, or the specified
-// value if it doesn't exist or isn't a strin
+// value if it doesn't exist or isn't a string
 func (t Typed) StringOr(key string, d string) string {
 	if value, exists := t.StringIf(key); exists {
 		return value
@@ -240,6 +241,41 @@ func (t Typed) StringIf(key string) (string, bool) {
 		return n, true
 	}
 	return "", false
+}
+
+func (t Typed) Time(key string) time.Time {
+	return t.TimeOr(key, time.Now())
+}
+
+// Returns a time at the key, or the specified
+// value if it doesn't exist or isn't a time
+func (t Typed) TimeOr(key string, d time.Time) time.Time {
+	if value, exists := t.TimeIf(key); exists {
+		return value
+	}
+	return d
+}
+
+// Returns a time.Time or panics
+func (t Typed) TimeMust(key string) time.Time {
+	tt, exists := t.TimeIf(key)
+	if exists == false {
+		panic("expected time.Time value for " + key)
+	}
+	return tt
+}
+
+// Returns an time.time at the key and whether
+// or not the key existed and the value was a time.Time
+func (t Typed) TimeIf(key string) (time.Time, bool) {
+	value, exists := t[key]
+	if exists == false {
+		return time.Time{}, false
+	}
+	if n, ok := value.(time.Time); ok {
+		return n, true
+	}
+	return time.Time{}, false
 }
 
 // Returns a Typed helper at the key
