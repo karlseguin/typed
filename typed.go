@@ -3,6 +3,7 @@ package typed
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"io/ioutil"
 	"time"
 )
@@ -36,6 +37,15 @@ func Must(data []byte) Typed {
 		panic(err)
 	}
 	return Typed(m)
+}
+
+// Create a Typed helper from the given JSON stream
+func JsonReader(reader io.Reader) (Typed, error) {
+	if data, err := ioutil.ReadAll(reader); err != nil {
+		return nil, err
+	} else {
+		return Json(data)
+	}
 }
 
 // Create a Typed helper from the given JSON string
