@@ -94,7 +94,7 @@ func JsonStringArray(data string) ([]Typed, error) {
 
 // Create an array of Typed helpers from a file
 // Used for when the root is an array which contains objects
-func JsonFileArary(path string) ([]Typed, error) {
+func JsonFileArray(path string) ([]Typed, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
