@@ -1,14 +1,25 @@
 package typed
 
 import (
-	. "github.com/karlseguin/expect"
+	"bytes"
 	"testing"
+
+	. "github.com/karlseguin/expect"
 )
 
 type TypedTests struct{}
 
 func Test_Typed(t *testing.T) {
 	Expectify(new(TypedTests), t)
+}
+
+func (_ TypedTests) JsonStream() {
+	json := []byte(`{"power": 9002}`)
+	stream := bytes.NewBuffer(json)
+
+	typed, err := JsonStream(stream)
+	Expect(typed.Int("power")).To.Equal(9002)
+	Expect(err).To.Equal(nil)
 }
 
 func (_ TypedTests) Json() {
