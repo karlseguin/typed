@@ -40,7 +40,7 @@ func Must(data []byte) Typed {
 }
 
 // Create a Typed helper from the given JSON stream
-func JsonStream(reader io.Reader) (Typed, error) {
+func JsonReader(reader io.Reader) (Typed, error) {
 	if data, err := ioutil.ReadAll(reader); err != nil {
 		return nil, err
 	} else {

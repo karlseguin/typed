@@ -13,11 +13,11 @@ func Test_Typed(t *testing.T) {
 	Expectify(new(TypedTests), t)
 }
 
-func (_ TypedTests) JsonStream() {
+func (_ TypedTests) JsonReader() {
 	json := []byte(`{"power": 9002}`)
 	stream := bytes.NewBuffer(json)
 
-	typed, err := JsonStream(stream)
+	typed, err := JsonReader(stream)
 	Expect(typed.Int("power")).To.Equal(9002)
 	Expect(err).To.Equal(nil)
 }
