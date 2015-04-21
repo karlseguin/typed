@@ -149,7 +149,7 @@ Alternatively, `MustBytes(key string) []byte` can be used. It will panic on erro
 
 ## Root Array
 
-Support for JSON document with arrays at their root is supported. Use the `JsonArray(data []byte)`, `JsonStringArray(data string)` and `JsonFileArary(path string)` to receive an `[]Typed`
+Support for JSON document with arrays at their root is supported. Use the `JsonArray(data []byte)`, `JsonStringArray(data string)` and `JsonFileArray(path string)` to receive an `[]Typed`
 
 If the array has primitive values, the syntax is a little awkward. The key for the field is "0":
 
