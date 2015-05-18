@@ -148,6 +148,36 @@ func (_ TypedTests) Objects() {
 	Expect(typed.Objects("names")[0].Int("first")).To.Equal(1)
 }
 
+func (_ TypedTests) ObjectsIf() {
+	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
+	objects, exists := typed.ObjectsIf("names")
+	Expect(objects[0].Int("first")).To.Equal(1)
+	Expect(exists).To.Equal(true)
+
+	objects, exists = typed.ObjectsIf("non_existing")
+	Expect(objects).To.Equal(nil)
+	Expect(exists).To.Equal(false)
+}
+
+func (_ TypedTests) ObjectsMust() {
+	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
+	objects := typed.ObjectsMust("names")
+	Expect(objects[0].Int("first")).To.Equal(1)
+
+	paniced := false
+	func() {
+		defer func() {
+			if recovered := recover(); recovered != nil {
+				paniced = true
+			}
+		}()
+
+		typed.ObjectsMust("non_existing")
+	}()
+
+	Expect(paniced).To.Equal(true)
+}
+
 func (_ TypedTests) ObjectsAsMap() {
 	typed := New(build("names", []map[string]interface{}{build("first", 1), build("second", 2)}))
 	Expect(typed.Objects("names")[0].Int("first")).To.Equal(1)

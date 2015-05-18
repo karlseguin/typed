@@ -627,6 +627,12 @@ func (t Typed) StringsIf(key string) ([]string, bool) {
 
 // Returns an slice of Typed helpers, or a nil slice
 func (t Typed) Objects(key string) []Typed {
+	value, _ := t.ObjectsIf(key)
+	return value
+}
+
+// Returns a slice of Typed helpers and true if exists, otherwise; nil and false.
+func (t Typed) ObjectsIf(key string) ([]Typed, bool) {
 	value, exists := t[key]
 	if exists == true {
 		switch t := value.(type) {
@@ -636,17 +642,26 @@ func (t Typed) Objects(key string) []Typed {
 			for i := 0; i < l; i++ {
 				n[i] = Typed(t[i].(map[string]interface{}))
 			}
-			return n
+			return n, true
 		case []map[string]interface{}:
 			l := len(t)
 			n := make([]Typed, l)
 			for i := 0; i < l; i++ {
 				n[i] = Typed(t[i])
 			}
-			return n
+			return n, true
 		}
 	}
-	return nil
+	return nil, false
+}
+
+func (t Typed) ObjectsMust(key string) []Typed {
+	value, exists := t.ObjectsIf(key)
+	if exists == false {
+		panic("expected objects value for " + key)
+	}
+
+	return value
 }
 
 // Returns an slice of map[string]interfaces, or a nil slice
