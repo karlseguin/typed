@@ -157,7 +157,12 @@ func (_ TypedTests) ObjectsIf() {
 	objects, exists = typed.ObjectsIf("non_existing")
 	Expect(objects).To.Equal(nil)
 	Expect(exists).To.Equal(false)
+}
 
+func (_ TypedTests) ObjectsMust() {
+	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
+	objects := typed.ObjectsMust("names")
+	Expect(objects[0].Int("first")).To.Equal(1)
 }
 
 func (_ TypedTests) ObjectsAsMap() {
