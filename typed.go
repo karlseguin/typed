@@ -655,6 +655,15 @@ func (t Typed) ObjectsIf(key string) ([]Typed, bool) {
 	return nil, false
 }
 
+func (t Typed) ObjectsMust(key string) []Typed {
+	value, exists := t.ObjectsIf(key)
+	if exists == false {
+		panic("expected objects value for " + key)
+	}
+
+	return value
+}
+
 // Returns an slice of map[string]interfaces, or a nil slice
 func (t Typed) Maps(key string) []map[string]interface{} {
 	value, exists := t[key]
