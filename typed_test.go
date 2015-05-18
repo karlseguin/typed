@@ -163,6 +163,19 @@ func (_ TypedTests) ObjectsMust() {
 	typed := New(build("names", []interface{}{build("first", 1), build("second", 2)}))
 	objects := typed.ObjectsMust("names")
 	Expect(objects[0].Int("first")).To.Equal(1)
+
+	paniced := false
+	func() {
+		defer func() {
+			if recovered := recover(); recovered != nil {
+				paniced = true
+			}
+		}()
+
+		typed.ObjectsMust("non_existing")
+	}()
+
+	Expect(paniced).To.Equal(true)
 }
 
 func (_ TypedTests) ObjectsAsMap() {
