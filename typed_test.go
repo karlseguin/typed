@@ -80,11 +80,15 @@ func (_ TypedTests) Object() {
 	typed := New(build("server", build("port", 32)))
 	Expect(typed.Object("server").Int("port")).To.Equal(32)
 	Expect(typed.ObjectOr("server", build("a", "b")).Int("port")).To.Equal(32)
-	Expect(typed.ObjectIf("server")).To.Equal(NotNil, true)
 
 	Expect(len(typed.Object("other"))).To.Equal(0)
 	Expect(typed.ObjectOr("other", build("x", "y")).String("x")).To.Equal("y")
 	Expect(typed.ObjectIf("other")).To.Equal(nil, false)
+}
+
+func (_ TypedTests) ObjectType() {
+	typed := New(build("server", Typed(build("port", 32))))
+	Expect(typed.Object("server").Int("port")).To.Equal(32)
 }
 
 func (_ TypedTests) Interface() {

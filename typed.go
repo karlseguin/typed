@@ -326,8 +326,11 @@ func (t Typed) ObjectIf(key string) (Typed, bool) {
 	if exists == false {
 		return nil, false
 	}
-	if n, ok := value.(map[string]interface{}); ok {
-		return Typed(n), true
+	switch t := value.(type) {
+	case map[string]interface{}:
+		return Typed(t), true
+	case Typed:
+		return t, true
 	}
 	return nil, false
 }
@@ -650,6 +653,8 @@ func (t Typed) ObjectsIf(key string) ([]Typed, bool) {
 				n[i] = Typed(t[i])
 			}
 			return n, true
+		case []Typed:
+			return t, true
 		}
 	}
 	return nil, false
