@@ -643,7 +643,12 @@ func (t Typed) ObjectsIf(key string) ([]Typed, bool) {
 			l := len(t)
 			n := make([]Typed, l)
 			for i := 0; i < l; i++ {
-				n[i] = Typed(t[i].(map[string]interface{}))
+				switch it := t[i].(type) {
+				case map[string]interface{}:
+					n[i] = Typed(it)
+				case Typed:
+					n[i] = it
+				}
 			}
 			return n, true
 		case []map[string]interface{}:
