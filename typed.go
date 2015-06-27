@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"strconv"
 	"time"
 )
 
@@ -168,6 +169,7 @@ func (t Typed) IntIf(key string) (int, bool) {
 	if exists == false {
 		return 0, false
 	}
+
 	switch t := value.(type) {
 	case int:
 		return t, true
@@ -179,6 +181,9 @@ func (t Typed) IntIf(key string) (int, bool) {
 		return int(t), true
 	case float64:
 		return int(t), true
+	case string:
+		i, err := strconv.Atoi(t)
+		return i, err == nil
 	}
 	return 0, false
 }
@@ -212,8 +217,12 @@ func (t Typed) FloatIf(key string) (float64, bool) {
 	if exists == false {
 		return 0, false
 	}
-	if n, ok := value.(float64); ok {
-		return n, true
+	switch t := value.(type) {
+	case float64:
+		return t, true
+	case string:
+		f, err := strconv.ParseFloat(t, 10)
+		return f, err == nil
 	}
 	return 0, false
 }
@@ -473,17 +482,21 @@ func (t Typed) IntsIf(key string) ([]int, bool) {
 		}
 
 		n := make([]int, l)
-		switch a[0].(type) {
-		case float64:
-			for i := 0; i < l; i++ {
-				n[i] = int(a[i].(float64))
+		for i := 0; i < l; i++ {
+			switch t := a[i].(type) {
+			case int:
+				n[i] = t
+			case float64:
+				n[i] = int(t)
+			case string:
+				_i, err := strconv.Atoi(t)
+				if err != nil {
+					return n, false
+				}
+				n[i] = _i
+			default:
+				return n, false
 			}
-		case int:
-			for i := 0; i < l; i++ {
-				n[i] = a[i].(int)
-			}
-		default:
-			return n, false
 		}
 		return n, true
 	}
@@ -527,21 +540,23 @@ func (t Typed) Ints64If(key string) ([]int64, bool) {
 		}
 
 		n := make([]int64, l)
-		switch a[0].(type) {
-		case float64:
-			for i := 0; i < l; i++ {
-				n[i] = int64(a[i].(float64))
+		for i := 0; i < l; i++ {
+			switch t := a[i].(type) {
+			case int64:
+				n[i] = t
+			case float64:
+				n[i] = int64(t)
+			case int:
+				n[i] = int64(t)
+			case string:
+				_i, err := strconv.ParseInt(t, 10, 10)
+				if err != nil {
+					return n, false
+				}
+				n[i] = _i
+			default:
+				return n, false
 			}
-		case int64:
-			for i := 0; i < l; i++ {
-				n[i] = a[i].(int64)
-			}
-		case int:
-			for i := 0; i < l; i++ {
-				n[i] = int64(a[i].(int))
-			}
-		default:
-			return n, false
 		}
 		return n, true
 	}
@@ -577,9 +592,17 @@ func (t Typed) FloatsIf(key string) ([]float64, bool) {
 	if a, ok := value.([]interface{}); ok {
 		l := len(a)
 		n := make([]float64, l)
-		var ok bool
 		for i := 0; i < l; i++ {
-			if n[i], ok = a[i].(float64); ok == false {
+			switch t := a[i].(type) {
+			case float64:
+				n[i] = t
+			case string:
+				f, err := strconv.ParseFloat(t, 10)
+				if err != nil {
+					return n, false
+				}
+				n[i] = f
+			default:
 				return n, false
 			}
 		}
@@ -718,6 +741,12 @@ func (t Typed) StringInt(key string) map[string]int {
 			m[k] = t
 		case float64:
 			m[k] = int(t)
+		case string:
+			i, err := strconv.Atoi(t)
+			if err != nil {
+				return nil
+			}
+			m[k] = i
 		}
 	}
 	return m
@@ -731,7 +760,18 @@ func (t Typed) StringFloat(key string) map[string]float64 {
 	}
 	m := make(map[string]float64, len(raw))
 	for k, value := range raw {
-		m[k] = value.(float64)
+		switch t := value.(type) {
+		case float64:
+			m[k] = t
+		case string:
+			f, err := strconv.ParseFloat(t, 10)
+			if err != nil {
+				return nil
+			}
+			m[k] = f
+		default:
+			return nil
+		}
 	}
 	return m
 }

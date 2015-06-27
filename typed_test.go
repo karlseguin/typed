@@ -43,10 +43,14 @@ func (_ TypedTests) Bool() {
 }
 
 func (_ TypedTests) Int() {
-	typed := New(build("port", 84))
+	typed := New(build("port", 84, "string", "30"))
 	Expect(typed.Int("port")).To.Equal(84)
 	Expect(typed.IntOr("port", 11)).To.Equal(84)
 	Expect(typed.IntIf("port")).To.Equal(84, true)
+
+	Expect(typed.Int("string")).To.Equal(30)
+	Expect(typed.IntOr("string", 11)).To.Equal(30)
+	Expect(typed.IntIf("string")).To.Equal(30, true)
 
 	Expect(typed.Int("other")).To.Equal(0)
 	Expect(typed.IntOr("other", 33)).To.Equal(33)
@@ -54,10 +58,14 @@ func (_ TypedTests) Int() {
 }
 
 func (_ TypedTests) Float() {
-	typed := New(build("pi", 3.14))
+	typed := New(build("pi", 3.14, "string", "30.14"))
 	Expect(typed.Float("pi")).To.Equal(3.14)
 	Expect(typed.FloatOr("pi", 11.3)).To.Equal(3.14)
 	Expect(typed.FloatIf("pi")).To.Equal(3.14, true)
+
+	Expect(typed.Float("string")).To.Equal(30.14)
+	Expect(typed.FloatOr("string", 11.3)).To.Equal(30.14)
+	Expect(typed.FloatIf("string")).To.Equal(30.14, true)
 
 	Expect(typed.Float("other")).To.Equal(0.0)
 	Expect(typed.FloatOr("other", 11.3)).To.Equal(11.3)
@@ -111,19 +119,19 @@ func (_ TypedTests) Bools() {
 }
 
 func (_ TypedTests) Ints() {
-	typed := New(build("scores", []interface{}{2, 1}))
-	Expect(typed.Ints("scores")).To.Equal([]int{2, 1})
+	typed := New(build("scores", []interface{}{2, 1, "3"}))
+	Expect(typed.Ints("scores")).To.Equal([]int{2, 1, 3})
 	Expect(len(typed.Ints("other"))).To.Equal(0)
-	Expect(typed.IntsOr("scores", []int{3, 4})).To.Equal([]int{2, 1})
-	Expect(typed.IntsOr("other", []int{3, 4})).To.Equal([]int{3, 4})
+	Expect(typed.IntsOr("scores", []int{3, 4, 5})).To.Equal([]int{2, 1, 3})
+	Expect(typed.IntsOr("other", []int{3, 4, 5})).To.Equal([]int{3, 4, 5})
 }
 
 func (_ TypedTests) Ints64() {
-	typed := New(build("scores", []interface{}{2, 1}))
-	Expect(typed.Ints64("scores")).To.Equal([]int64{2, 1})
+	typed := New(build("scores", []interface{}{2, 1, "3"}))
+	Expect(typed.Ints64("scores")).To.Equal([]int64{2, 1, 3})
 	Expect(len(typed.Ints64("other"))).To.Equal(0)
-	Expect(typed.Ints64Or("scores", []int64{3, 4})).To.Equal([]int64{2, 1})
-	Expect(typed.Ints64Or("other", []int64{3, 4})).To.Equal([]int64{3, 4})
+	Expect(typed.Ints64Or("scores", []int64{3, 4, 5})).To.Equal([]int64{2, 1, 3})
+	Expect(typed.Ints64Or("other", []int64{3, 4, 5})).To.Equal([]int64{3, 4, 5})
 }
 
 func (_ TypedTests) Ints_WithFloats() {
@@ -132,11 +140,11 @@ func (_ TypedTests) Ints_WithFloats() {
 }
 
 func (_ TypedTests) Floats() {
-	typed := New(build("ranks", []interface{}{2.1, 1.2}))
-	Expect(typed.Floats("ranks")).To.Equal([]float64{2.1, 1.2})
+	typed := New(build("ranks", []interface{}{2.1, 1.2, "3.0"}))
+	Expect(typed.Floats("ranks")).To.Equal([]float64{2.1, 1.2, 3.0})
 	Expect(len(typed.Floats("other"))).To.Equal(0)
-	Expect(typed.FloatsOr("ranks", []float64{3.1, 4.2})).To.Equal([]float64{2.1, 1.2})
-	Expect(typed.FloatsOr("other", []float64{3.1, 4.2})).To.Equal([]float64{3.1, 4.2})
+	Expect(typed.FloatsOr("ranks", []float64{3.1, 4.2, 5.3})).To.Equal([]float64{2.1, 1.2, 3.0})
+	Expect(typed.FloatsOr("other", []float64{3.1, 4.2, 5.3})).To.Equal([]float64{3.1, 4.2, 5.3})
 }
 
 func (_ TypedTests) Strings() {
@@ -200,18 +208,20 @@ func (_ TypedTests) StringBool() {
 }
 
 func (_ TypedTests) StringInt() {
-	typed, _ := JsonString(`{"count":{"a":123,"b":43}}`)
+	typed, _ := JsonString(`{"count":{"a":123,"b":43,"c":"55"}}`)
 	m := typed.StringInt("count")
 	Expect(m["a"]).To.Equal(123)
 	Expect(m["b"]).To.Equal(43)
+	Expect(m["c"]).To.Equal(55)
 	Expect(m["xxz"]).To.Equal(0)
 }
 
 func (_ TypedTests) StringFloat() {
-	typed, _ := JsonString(`{"rank":{"aa":3.4,"bz":4.2}}`)
+	typed, _ := JsonString(`{"rank":{"aa":3.4,"bz":4.2,"cc":"5.5"}}`)
 	m := typed.StringFloat("rank")
 	Expect(m["aa"]).To.Equal(3.4)
 	Expect(m["bz"]).To.Equal(4.2)
+	Expect(m["cc"]).To.Equal(5.5)
 	Expect(m["xx"]).To.Equal(0.0)
 }
 
