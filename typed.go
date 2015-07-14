@@ -103,6 +103,16 @@ func JsonFileArray(path string) ([]Typed, error) {
 	return JsonArray(data)
 }
 
+func (t Typed) Keys() []string {
+	keys := make([]string, len(t))
+	i := 0
+	for k := range t {
+		keys[i] = k
+		i++
+	}
+	return keys
+}
+
 // Returns a boolean at the key, or false if it
 // doesn't exist, or if it isn't a bool
 func (t Typed) Bool(key string) bool {
