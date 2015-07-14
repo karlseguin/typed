@@ -34,6 +34,11 @@ func (_ TypedTests) JsonFile() {
 	Expect(err).To.Equal(nil)
 }
 
+func (_ TypedTests) Keys() {
+	typed := New(build("name", "leto", "type", []int{1, 2, 3}, "number", 1))
+	Expect(typed.Keys()).To.Equal([]string{"name", "type", "number"})
+}
+
 func (_ TypedTests) Bool() {
 	typed := New(build("log", true))
 	Expect(typed.Bool("log")).To.Equal(true)
