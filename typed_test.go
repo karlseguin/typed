@@ -14,17 +14,17 @@ func Test_Typed(t *testing.T) {
 }
 
 func (_ TypedTests) JsonReader() {
-	json := []byte(`{"power": 9002}`)
+	json := []byte(`{"power": 8988876781182962205}`)
 	stream := bytes.NewBuffer(json)
 
 	typed, err := JsonReader(stream)
-	Expect(typed.Int("power")).To.Equal(9002)
+	Expect(typed.Int("power")).To.Equal(8988876781182962205)
 	Expect(err).To.Equal(nil)
 }
 
 func (_ TypedTests) Json() {
-	typed, err := Json([]byte(`{"power": 9002}`))
-	Expect(typed.Int("power")).To.Equal(9002)
+	typed, err := Json([]byte(`{"power": 8988876781182962205}`))
+	Expect(typed.Int("power")).To.Equal(8988876781182962205)
 	Expect(err).To.Equal(nil)
 }
 

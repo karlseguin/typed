@@ -1,11 +1,13 @@
 package typed
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
 	"io/ioutil"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -26,32 +28,30 @@ func New(m map[string]interface{}) Typed {
 
 // Create a Typed helper from the given JSON bytes
 func Json(data []byte) (Typed, error) {
-	var m map[string]interface{}
-	err := json.Unmarshal(data, &m)
-	return Typed(m), err
+	return JsonReader(bytes.NewReader(data))
 }
 
 // Create a Typed helper from the given JSON bytes, panics on error
 func Must(data []byte) Typed {
-	var m map[string]interface{}
-	if err := json.Unmarshal(data, &m); err != nil {
+	m, err := Json(data)
+	if err != nil {
 		panic(err)
 	}
-	return Typed(m)
+	return m
 }
 
 // Create a Typed helper from the given JSON stream
 func JsonReader(reader io.Reader) (Typed, error) {
-	if data, err := ioutil.ReadAll(reader); err != nil {
-		return nil, err
-	} else {
-		return Json(data)
-	}
+	decoder := json.NewDecoder(reader)
+	decoder.UseNumber()
+	var m map[string]interface{}
+	err := decoder.Decode(&m)
+	return Typed(m), err
 }
 
 // Create a Typed helper from the given JSON string
 func JsonString(data string) (Typed, error) {
-	return Json([]byte(data))
+	return JsonReader(strings.NewReader(data))
 }
 
 // Create a Typed helper from the JSON within a file
@@ -66,8 +66,15 @@ func JsonFile(path string) (Typed, error) {
 // Create an array of Typed helpers
 // Used for when the root is an array which contains objects
 func JsonArray(data []byte) ([]Typed, error) {
+	return JsonReaderArray(bytes.NewReader(data))
+}
+
+// Create an array of Typed helpers given JSON stream
+func JsonReaderArray(reader io.Reader) ([]Typed, error) {
+	decoder := json.NewDecoder(reader)
+	decoder.UseNumber()
 	var m []interface{}
-	err := json.Unmarshal(data, &m)
+	err := decoder.Decode(&m)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +97,7 @@ func JsonArray(data []byte) ([]Typed, error) {
 // Create an array of Typed helpers from a string
 // Used for when the root is an array which contains objects
 func JsonStringArray(data string) ([]Typed, error) {
-	return JsonArray([]byte(data))
+	return JsonReaderArray(strings.NewReader(data))
 }
 
 // Create an array of Typed helpers from a file
@@ -194,6 +201,9 @@ func (t Typed) IntIf(key string) (int, bool) {
 	case string:
 		i, err := strconv.Atoi(t)
 		return i, err == nil
+	case json.Number:
+		i, err := t.Int64()
+		return int(i), err == nil
 	}
 	return 0, false
 }
@@ -232,6 +242,9 @@ func (t Typed) FloatIf(key string) (float64, bool) {
 		return t, true
 	case string:
 		f, err := strconv.ParseFloat(t, 10)
+		return f, err == nil
+	case json.Number:
+		f, err := t.Float64()
 		return f, err == nil
 	}
 	return 0, false
@@ -564,6 +577,12 @@ func (t Typed) Ints64If(key string) ([]int64, bool) {
 					return n, false
 				}
 				n[i] = _i
+			case json.Number:
+				_i, err := t.Int64()
+				if err != nil {
+					return n, false
+				}
+				n[i] = _i
 			default:
 				return n, false
 			}
@@ -608,6 +627,12 @@ func (t Typed) FloatsIf(key string) ([]float64, bool) {
 				n[i] = t
 			case string:
 				f, err := strconv.ParseFloat(t, 10)
+				if err != nil {
+					return n, false
+				}
+				n[i] = f
+			case json.Number:
+				f, err := t.Float64()
 				if err != nil {
 					return n, false
 				}
@@ -757,6 +782,12 @@ func (t Typed) StringInt(key string) map[string]int {
 				return nil
 			}
 			m[k] = i
+		case json.Number:
+			i, err := t.Int64()
+			if err != nil {
+				return nil
+			}
+			m[k] = int(i)
 		}
 	}
 	return m
@@ -775,6 +806,12 @@ func (t Typed) StringFloat(key string) map[string]float64 {
 			m[k] = t
 		case string:
 			f, err := strconv.ParseFloat(t, 10)
+			if err != nil {
+				return nil
+			}
+			m[k] = f
+		case json.Number:
+			f, err := t.Float64()
 			if err != nil {
 				return nil
 			}
